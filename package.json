@@ -1,0 +1,41 @@
+{
+    "name": "adflux-frontend",
+    "private": true,
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vue-tsc -b && vite build",
+        "preview": "vite preview",
+        "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
+        "format": "prettier --write src/"
+    },
+    "dependencies": {
+        "@vueuse/core": "^14.1.0",
+        "element-plus": "^2.11.8",
+        "pinia": "^3.0.4",
+        "vue": "^3.5.24",
+        "vue-router": "^4.6.3"
+    },
+    "devDependencies": {
+        "@rushstack/eslint-patch": "^1.15.0",
+        "@types/node": "^24.10.1",
+        "@vitejs/plugin-vue": "^6.0.1",
+        "@vue/eslint-config-prettier": "^10.2.0",
+        "@vue/eslint-config-typescript": "^14.6.0",
+        "@vue/tsconfig": "^0.8.1",
+        "eslint": "^9.39.1",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-prettier": "^5.5.4",
+        "eslint-plugin-vue": "^10.6.2",
+        "globals": "^16.5.0",
+        "jiti": "^2.6.1",
+        "prettier": "^3.7.1",
+        "typescript": "~5.9.3",
+        "typescript-eslint": "^8.48.0",
+        "unplugin-auto-import": "^20.3.0",
+        "unplugin-vue-components": "^30.0.0",
+        "vite": "^7.2.4",
+        "vue-tsc": "^3.1.4"
+    }
+}

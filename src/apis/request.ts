@@ -21,12 +21,13 @@ export async function request<T>(path: string, opts: RequestOptions = {}): Promi
             // TODO
         }
 
+        let json;
         try {
-            const json = JSON.parse(text);
-            throw new Error(json?.message ?? text ?? res.statusText);
+            json = JSON.parse(text);
         } catch {
             throw new Error(text ?? res.statusText);
         }
+        throw new Error(json?.message ?? text ?? res.statusText);
     }
 
     return JSON.parse(text);

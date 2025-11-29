@@ -3,13 +3,21 @@ import { request } from './request';
 export const authRegisterApi = (body: {
     username: string;
     userPassword: string;
-    checkPassword: string;
     phone: string;
     email: string;
+    role: 'advertiser' | 'publisher';
 }) => {
-    return request('/user/register', { method: 'POST', body });
+    return request('/auth/register', { method: 'POST', body });
 };
 
 export const authLoginApi = (body: { username: string; userPassword: string }) => {
-    return request('/user/login', { method: 'POST', body });
+    return request<{
+        code: number;
+        data: {
+            token: string;
+            username: string;
+            userRole: 'advertiser' | 'publisher' | 'admin';
+        };
+        message: string;
+    }>('/auth/login', { method: 'POST', body });
 };

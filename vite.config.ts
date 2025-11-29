@@ -1,6 +1,7 @@
 import vue from '@vitejs/plugin-vue';
 import { URL, fileURLToPath } from 'node:url';
 import AutoImport from 'unplugin-auto-import/vite';
+import ElementPlus from 'unplugin-element-plus/vite';
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
 import Components from 'unplugin-vue-components/vite';
 import { defineConfig } from 'vite';
@@ -16,6 +17,9 @@ export default defineConfig({
         Components({
             resolvers: [ElementPlusResolver()],
             dts: 'src/components.d.ts',
+        }),
+        ElementPlus({
+            defaultLocale: 'zh-CN',
         }),
     ],
     resolve: {

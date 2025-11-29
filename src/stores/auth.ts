@@ -1,4 +1,4 @@
-import { capitalize } from 'vue';
+import { capitalize } from '@/utils/tools';
 import { defineStore } from 'pinia';
 import { StorageSerializers, useLocalStorage } from '@vueuse/core';
 import { authLoginApi } from '@/apis/authApis';

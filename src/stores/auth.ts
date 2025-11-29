@@ -23,7 +23,7 @@ export const useAuthStore = defineStore('auth', () => {
     };
 
     const logout = () => {
-        token.value = '';
+        token.value = null;
         userInfo.value = null;
         router.push({ name: 'Login' });
     };

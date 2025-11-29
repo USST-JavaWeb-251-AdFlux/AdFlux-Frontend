@@ -23,5 +23,10 @@ dist-ssr
 *.sln
 *.sw?
 
+# Auto generated type definition files
 src/auto-imports.d.ts
 src/components.d.ts
+
+# Environment files
+.env.production
+.env.development

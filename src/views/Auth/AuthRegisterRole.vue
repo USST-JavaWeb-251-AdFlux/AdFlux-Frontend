@@ -79,7 +79,7 @@ const navigateToLogin = () => router.push({ name: 'Login' });
             label-width="auto"
             label-position="right"
             :model="form"
-            :rules
+            :rules="rules"
             v-loading="loading"
             @submit.prevent="onSubmit"
         >

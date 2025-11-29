@@ -47,7 +47,7 @@ const navigateToRegister = () => router.push({ name: 'Register' });
             label-width="auto"
             label-position="right"
             :model="form"
-            :rules
+            :rules="rules"
             v-loading="loading"
             @submit.prevent="onSubmit"
         >

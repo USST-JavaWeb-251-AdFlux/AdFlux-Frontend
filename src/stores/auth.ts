@@ -14,6 +14,9 @@ export const useAuthStore = defineStore('auth', () => {
 
     const login = async (body: { username: string; userPassword: string }) => {
         const { data } = await authLoginApi(body);
+        if (!data.token || !data.username || !data.userRole) {
+            throw new Error('Invalid login response');
+        }
         token.value = data.token;
         userInfo.value = { username: data.username, userRole: data.userRole };
         router.push({ name: capitalize(data.userRole) });

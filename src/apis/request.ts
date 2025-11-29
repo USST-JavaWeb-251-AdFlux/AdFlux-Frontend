@@ -1,13 +1,18 @@
+import { useAuthStore } from '@/stores/auth';
+
 export type RequestOptions = Omit<RequestInit, 'headers' | 'body'> & {
     headers?: Record<string, string>;
     body?: object;
 };
 
 export async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
+    const authStore = useAuthStore();
+
     const init: RequestInit = {
         method: opts.method ?? 'GET',
         headers: {
             'Content-Type': 'application/json',
+            ...(authStore.token ? { Authorization: `Bearer ${authStore.token}` } : {}),
             ...(opts.headers ?? {}),
         },
         body: opts.body ? JSON.stringify(opts.body) : null,
@@ -18,7 +23,8 @@ export async function request<T>(path: string, opts: RequestOptions = {}): Promi
     const text = await res.text();
     if (!res.ok) {
         if (res.status === 401) {
-            // TODO
+            authStore.logout();
+            throw new Error('登录已失效');
         }
 
         let json;

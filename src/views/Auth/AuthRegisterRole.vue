@@ -84,7 +84,7 @@ const navigateToLogin = () => router.push({ name: 'Login' });
             @submit.prevent="onSubmit"
         >
             <ElFormItem label="用户名" prop="username">
-                <ElInput v-model="form.username" placeholder="用户名" />
+                <ElInput v-model.trim="form.username" placeholder="用户名" />
             </ElFormItem>
             <ElFormItem label="密码" prop="password">
                 <ElInput v-model="form.password" type="password" placeholder="密码" />
@@ -93,14 +93,14 @@ const navigateToLogin = () => router.push({ name: 'Login' });
                 <ElInput v-model="form.confirmPassword" type="password" placeholder="确认密码" />
             </ElFormItem>
             <ElFormItem label="邮箱" prop="email">
-                <ElInput v-model="form.email" placeholder="邮箱" />
+                <ElInput v-model.trim="form.email" placeholder="邮箱" />
             </ElFormItem>
             <ElFormItem label="手机号" prop="phone">
-                <ElInput v-model="form.phone" placeholder="手机号" />
+                <ElInput v-model.trim="form.phone" placeholder="手机号" />
             </ElFormItem>
         </ElForm>
 
-        <ElButton type="primary" @click="onSubmit">注册</ElButton>
-        <ElButton @click="navigateToLogin" text bg>已有帐户？去登录</ElButton>
+        <ElButton :disabled="loading" type="primary" @click="onSubmit">注册</ElButton>
+        <ElButton :disabled="loading" @click="navigateToLogin" text bg>已有帐户？去登录</ElButton>
     </div>
 </template>

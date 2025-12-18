@@ -52,14 +52,16 @@ const navigateToRegister = () => router.push({ name: 'Register' });
             @submit.prevent="onSubmit"
         >
             <ElFormItem label="用户名" prop="username">
-                <ElInput v-model="form.username" placeholder="用户名" />
+                <ElInput v-model.trim="form.username" placeholder="用户名" />
             </ElFormItem>
             <ElFormItem label="密码" prop="password">
                 <ElInput v-model="form.password" type="password" placeholder="密码" />
             </ElFormItem>
         </ElForm>
 
-        <ElButton type="primary" @click="onSubmit">登录</ElButton>
-        <ElButton @click="navigateToRegister" text bg>没有帐户？去注册</ElButton>
+        <ElButton :disabled="loading" type="primary" @click="onSubmit">登录</ElButton>
+        <ElButton :disabled="loading" @click="navigateToRegister" text bg
+            >没有帐户？去注册</ElButton
+        >
     </div>
 </template>

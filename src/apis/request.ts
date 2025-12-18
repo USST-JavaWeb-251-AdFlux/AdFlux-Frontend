@@ -2,6 +2,7 @@ import { useAuthStore } from '@/stores/auth';
 
 export type RequestOptions = Omit<RequestInit, 'headers' | 'body'> & {
     headers?: Record<string, string>;
+    params?: Record<string, string | number | boolean | undefined | null>;
     body?: object;
 };
 
@@ -18,7 +19,17 @@ export async function request<T>(path: string, opts: RequestOptions = {}): Promi
         body: opts.body ? JSON.stringify(opts.body) : null,
     };
 
-    const res = await fetch(`${import.meta.env.VITE_API_HOST}${path}`, init);
+    const params = new URLSearchParams();
+    if (init.method === 'GET' && opts.params) {
+        Object.entries(opts.params).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+                params.append(key, String(value));
+            }
+        });
+    }
+    const queryString = params.size ? `?${params.toString()}` : '';
+    const url = `${import.meta.env.VITE_API_HOST}${path}${queryString}`;
+    const res = await fetch(url, init);
 
     const text = await res.text();
     if (!res.ok) {

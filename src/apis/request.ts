@@ -27,7 +27,8 @@ export async function request<T>(path: string, opts: RequestOptions = {}): Promi
             }
         });
     }
-    const url = `${import.meta.env.VITE_API_HOST}${path}?${params.toString()}`;
+    const queryString = params.size ? `?${params.toString()}` : '';
+    const url = `${import.meta.env.VITE_API_HOST}${path}${queryString}`;
     const res = await fetch(url, init);
 
     const text = await res.text();

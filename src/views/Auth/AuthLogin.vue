@@ -55,7 +55,7 @@ const navigateToRegister = () => router.push({ name: 'Register' });
                 <ElInput v-model.trim="form.username" placeholder="用户名" />
             </ElFormItem>
             <ElFormItem label="密码" prop="password">
-                <ElInput v-model.trim="form.password" type="password" placeholder="密码" />
+                <ElInput v-model="form.password" type="password" placeholder="密码" />
             </ElFormItem>
         </ElForm>
 

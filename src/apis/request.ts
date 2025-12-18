@@ -1,6 +1,10 @@
 import { useAuthStore } from '@/stores/auth';
 
-export type RequestOptions = Omit<RequestInit, 'headers' | 'body'> & {
+const rawHost = import.meta.env.VITE_API_HOST;
+const isDev = import.meta.env.DEV;
+const apiHost = isDev ? new URL(rawHost).pathname : rawHost;
+
+type RequestOptions = Omit<RequestInit, 'headers' | 'body'> & {
     headers?: Record<string, string>;
     params?: Record<string, string | number | boolean | undefined | null>;
     body?: object;
@@ -28,7 +32,7 @@ export async function request<T>(path: string, opts: RequestOptions = {}): Promi
         });
     }
     const queryString = params.size ? `?${params.toString()}` : '';
-    const url = `${import.meta.env.VITE_API_HOST}${path}${queryString}`;
+    const url = `${apiHost}${path}${queryString}`;
     const res = await fetch(url, init);
 
     const text = await res.text();

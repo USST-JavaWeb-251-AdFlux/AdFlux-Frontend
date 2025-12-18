@@ -1,7 +1,7 @@
-import { capitalize } from '@/utils/tools';
 import { defineStore } from 'pinia';
 import { StorageSerializers, useLocalStorage } from '@vueuse/core';
 import { authLoginApi } from '@/apis/authApis';
+import { capitalize } from '@/utils/tools';
 
 export const useAuthStore = defineStore('auth', () => {
     const router = useRouter();

@@ -1,4 +1,5 @@
 import { useAuthStore } from '@/stores/auth';
+import type { ApiResponse } from './types';
 
 const rawHost = import.meta.env.VITE_API_HOST;
 const isDev = import.meta.env.DEV;
@@ -10,7 +11,10 @@ type RequestOptions = Omit<RequestInit, 'headers' | 'body'> & {
     body?: object;
 };
 
-export async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
+export async function request<T extends ApiResponse>(
+    path: string,
+    opts: RequestOptions = {},
+): Promise<T> {
     const authStore = useAuthStore();
 
     const init: RequestInit = {
@@ -33,23 +37,17 @@ export async function request<T>(path: string, opts: RequestOptions = {}): Promi
     }
     const queryString = params.size ? `?${params.toString()}` : '';
     const url = `${apiHost}${path}${queryString}`;
-    const res = await fetch(url, init);
+    const response = await fetch(url, init);
 
-    const text = await res.text();
-    if (!res.ok) {
-        if (res.status === 401) {
+    const result: T = await response.json();
+    if (!response.ok) {
+        if (response.status === 401) {
             authStore.logout();
             throw new Error('登录已失效');
         }
 
-        let json;
-        try {
-            json = JSON.parse(text);
-        } catch {
-            throw new Error(text ?? res.statusText);
-        }
-        throw new Error(json?.message ?? text ?? res.statusText);
+        throw new Error(result.message || response.statusText);
     }
 
-    return JSON.parse(text);
+    return result;
 }

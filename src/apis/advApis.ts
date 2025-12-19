@@ -36,7 +36,7 @@ export type AdDetails = {
 
 export type AdMeta = Pick<
     AdDetails,
-    'adLayout' | 'adType' | 'categoryId' | 'landingPage' | 'mediaUrl' | 'title' | 'weeklyBudget'
+    'adLayout' | 'categoryId' | 'landingPage' | 'mediaUrl' | 'title' | 'weeklyBudget'
 >;
 
 export const advListAdsApi = (

@@ -13,7 +13,7 @@ import {
 
 const props = defineProps<{ adId?: string }>();
 const router = useRouter();
-const formRef = ref<FormInstance>();
+const formRef = useTemplateRef<FormInstance>('formRef');
 const loading = ref(true);
 const submitting = ref(false);
 
@@ -62,29 +62,30 @@ const fetchAdDetails = async () => {
     }
 };
 
-const handleSubmit = async (formEl: FormInstance | undefined) => {
+const handleSubmit = async (formEl: FormInstance | null) => {
     if (!formEl) return;
-    await formEl.validate(async (valid) => {
-        if (valid) {
-            submitting.value = true;
-            try {
-                if (isEdit.value && props.adId) {
-                    await advUpdateAdApi(props.adId, formData);
-                    ElMessage.success('更新成功');
-                } else {
-                    await advCreateAdApi(formData);
-                    ElMessage.success('创建成功');
-                }
-                router.back();
-            } catch (error) {
-                ElMessage.error(
-                    `${isEdit.value ? '更新' : '创建'}失败：${(error as Error).message}`,
-                );
-            } finally {
-                submitting.value = false;
-            }
+    try {
+        await formEl.validate();
+    } catch {
+        return;
+    }
+
+    submitting.value = true;
+    try {
+        if (isEdit.value && props.adId) {
+            await advUpdateAdApi(props.adId, formData);
+            ElMessage.success('更新成功');
+            router.replace({ name: 'AdvertiserAdDetail', params: { adId: props.adId } });
+        } else {
+            const result = await advCreateAdApi(formData);
+            ElMessage.success('创建成功');
+            router.replace({ name: 'AdvertiserAdDetail', params: { adId: result.data.adId } });
         }
-    });
+    } catch (error) {
+        ElMessage.error(`${isEdit.value ? '更新' : '创建'}失败：${(error as Error).message}`);
+    } finally {
+        submitting.value = false;
+    }
 };
 
 const handleCancel = () => {

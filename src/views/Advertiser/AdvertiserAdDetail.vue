@@ -38,7 +38,7 @@ const handleBack = () => {
 
 const handleEdit = () => {
     if (ad.value) {
-        router.push({ name: 'AdvertiserAdEdit', params: { adId: ad.value.adId } });
+        router.replace({ name: 'AdvertiserAdEdit', params: { adId: ad.value.adId } });
     }
 };
 

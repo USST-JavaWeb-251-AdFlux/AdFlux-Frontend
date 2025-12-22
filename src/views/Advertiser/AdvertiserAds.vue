@@ -210,6 +210,7 @@ onMounted(fetchAds);
                                             v-if="ad.landingPage"
                                             :href="ad.landingPage"
                                             target="_blank"
+                                            rel="noopener noreferrer"
                                             class="link"
                                             >{{ ad.landingPage }}</a
                                         >

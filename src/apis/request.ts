@@ -29,21 +29,20 @@ export async function request<T extends ApiResponse>(
 
     const params = new URLSearchParams();
     if (opts.params) {
-        Object.entries(opts.params).forEach(([key, value]) => {
+        for (const [key, value] of Object.entries(opts.params)) {
             if (value !== undefined && value !== null) {
                 params.append(key, String(value));
             }
-        });
+        }
     }
-    const queryString = params.size ? `?${params.toString()}` : '';
-    const url = `${apiHost}${path}${queryString}`;
+    const query = params.size ? `?${params.toString()}` : '';
+    const url = `${apiHost}${path}${query}`;
     const response = await fetch(url, init);
 
     const result: T = await response.json();
     if (!response.ok) {
         if (response.status === 401) {
             authStore.logout();
-            throw new Error('登录已失效');
         }
 
         throw new Error(result.message || response.statusText);

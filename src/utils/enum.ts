@@ -1,18 +1,36 @@
-export type EnumItem = {
-    value: number;
+type EnumDefinition = Record<string, EnumItem>;
+
+type Enum<T extends EnumDefinition> = Readonly<T> & {
+    (): Readonly<T>;
+    (value: ValueOf<T>): Readonly<T[keyof T]>;
+};
+
+type EnumItem = {
+    value: number | string;
     label: string;
     type?: 'primary' | 'success' | 'info' | 'warning' | 'danger';
     [key: string]: unknown;
 };
 
-export type Enum = Record<string, EnumItem>;
+export type ValueOf<T> = {
+    [K in keyof T]: T[K] extends { value: infer V } ? V : never;
+}[keyof T];
 
-export type ValueOf<T extends Enum> = T[keyof T]['value'];
+export const createEnum = <T extends EnumDefinition>(definition: T): Enum<T> => {
+    const valueMap = new Map<ValueOf<T>, T[keyof T]>();
+    const enumFn = (value?: ValueOf<T>) => (value !== undefined ? valueMap.get(value) : definition);
 
-export const getLabel = <T extends Enum>(enumObj: T, value: ValueOf<T>): T[keyof T]['label'] => {
-    return Object.values(enumObj)[value]?.label ?? '';
-};
+    for (const [key, item] of Object.entries(definition)) {
+        Object.defineProperty(enumFn, key, {
+            value: item,
+            writable: false,
+            enumerable: true,
+            configurable: false,
+        });
+        valueMap.set(item.value as ValueOf<T>, item as T[keyof T]);
+        Object.freeze(item);
+    }
 
-export const getType = <T extends Enum>(enumObj: T, value: ValueOf<T>): T[keyof T]['type'] => {
-    return Object.values(enumObj)[value]?.type;
+    Object.freeze(enumFn);
+    return enumFn as Enum<T>;
 };

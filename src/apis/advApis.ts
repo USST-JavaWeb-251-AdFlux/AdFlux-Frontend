@@ -1,28 +1,28 @@
-import type { ValueOf } from '@/utils/enum';
+import { type ValueOf, createEnum } from '@/utils/enum';
 import { request } from './request';
 import type { ApiResponse, Pagination, PaginationParams } from './types';
 
-export const AdType = {
+export const AdType = createEnum({
     image: { value: 0, label: '图片' },
     video: { value: 1, label: '视频' },
-} as const;
+} as const);
 
-export const AdLayout = {
+export const AdLayout = createEnum({
     banner: { value: 0, label: '横幅' },
     sidebar: { value: 1, label: '侧边栏' },
     card: { value: 2, label: '卡片' },
-} as const;
+} as const);
 
-export const AdActive = {
+export const AdActive = createEnum({
     inactive: { value: 0, label: '禁用', type: 'info' },
     active: { value: 1, label: '启用', type: 'success' },
-} as const;
+} as const);
 
-export const ReviewStatus = {
+export const ReviewStatus = createEnum({
     pending: { value: 0, label: '待审核', type: 'warning' },
     approved: { value: 1, label: '已通过', type: 'success' },
     rejected: { value: 2, label: '已拒绝', type: 'danger' },
-} as const;
+} as const);
 
 export type AdDetails = {
     adId: string;

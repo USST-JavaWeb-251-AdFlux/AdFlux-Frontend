@@ -5,14 +5,13 @@ import { ElMessage, ElMessageBox } from 'element-plus';
 import {
     AdActive,
     type AdDetails,
-    AdLayout,
     AdType,
     ReviewStatus,
     advDeleteAdApi,
     advListAdsApi,
     advToggleAdStatusApi,
 } from '@/apis/advApis';
-import { type ValueOf, getLabel, getType } from '@/utils/enum';
+import { type ValueOf } from '@/utils/enum';
 
 const loading = ref(false);
 const ads = ref<AdDetails[]>([]);
@@ -109,7 +108,7 @@ onMounted(fetchAds);
                     @change="handleFilterChange"
                 >
                     <ElOption
-                        v-for="opt in ReviewStatus"
+                        v-for="opt in ReviewStatus()"
                         :key="opt.value"
                         :label="opt.label"
                         :value="opt.value"
@@ -123,7 +122,7 @@ onMounted(fetchAds);
                     @change="handleFilterChange"
                 >
                     <ElOption
-                        v-for="opt in AdActive"
+                        v-for="opt in AdActive()"
                         :key="opt.value"
                         :label="opt.label"
                         :value="opt.value"
@@ -176,30 +175,30 @@ onMounted(fetchAds);
                                 <div class="ad-header">
                                     <h3 class="ad-title">{{ ad.title || '未命名广告' }}</h3>
                                     <ElTag
-                                        :type="getType(ReviewStatus, ad.reviewStatus)"
+                                        :type="ReviewStatus(ad.reviewStatus).type"
                                         size="small"
                                         disable-transitions
                                     >
-                                        {{ getLabel(ReviewStatus, ad.reviewStatus) }}
+                                        {{ ReviewStatus(ad.reviewStatus).label }}
                                     </ElTag>
                                     <ElTag
-                                        :type="getType(AdActive, ad.isActive)"
+                                        :type="AdActive(ad.isActive).type"
                                         size="small"
                                         disable-transitions
                                     >
-                                        {{ getLabel(AdActive, ad.isActive) }}
+                                        {{ AdActive(ad.isActive).label }}
                                     </ElTag>
                                 </div>
 
                                 <div class="ad-details">
                                     <div class="detail-item">
                                         <span class="label">类型：</span>
-                                        <span>{{ getLabel(AdType, ad.adType) }}</span>
+                                        <span>{{ AdType(ad.adType).label }}</span>
                                     </div>
-                                    <div class="detail-item">
+                                    <!-- <div class="detail-item">
                                         <span class="label">布局：</span>
-                                        <span>{{ getLabel(AdLayout, ad.adLayout) }}</span>
-                                    </div>
+                                        <span>{{ AdLayout(ad.adLayout).label }}</span>
+                                    </div> -->
                                     <div class="detail-item">
                                         <span class="label">预算：</span>
                                         <span>¥{{ ad.weeklyBudget }} / 周</span>

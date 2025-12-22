@@ -53,8 +53,22 @@ const routes: RouteRecordRaw[] = [
             {
                 path: '/advertiser',
                 name: 'Advertiser',
-                meta: { title: '控制台', role: 'advertiser' },
-                component: () => import('@/views/Advertiser/AdvertiserHome.vue'),
+                meta: { role: 'advertiser' },
+                redirect: { name: 'AdvertiserHome' },
+                children: [
+                    {
+                        path: 'dashboard',
+                        name: 'AdvertiserHome',
+                        meta: { title: '控制台' },
+                        component: () => import('@/views/Advertiser/AdvertiserHome.vue'),
+                    },
+                    {
+                        path: 'adManage',
+                        name: 'AdvertiserAds',
+                        meta: { title: '广告管理' },
+                        component: () => import('@/views/Advertiser/AdvertiserAds.vue'),
+                    },
+                ],
             },
             {
                 path: '/publisher',

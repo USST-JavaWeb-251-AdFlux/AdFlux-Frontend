@@ -1,22 +1,27 @@
-import type { ValueOf } from '@/types/utils';
+import type { ValueOf } from '@/utils/enum';
 import { request } from './request';
 import type { ApiResponse, Pagination, PaginationParams } from './types';
 
 export const AdType = {
-    image: 0,
-    video: 1,
+    image: { value: 0, label: '图片' },
+    video: { value: 1, label: '视频' },
 } as const;
 
 export const AdLayout = {
-    banner: 0,
-    sidebar: 1,
-    card: 2,
+    banner: { value: 0, label: '横幅' },
+    sidebar: { value: 1, label: '侧边栏' },
+    card: { value: 2, label: '卡片' },
 } as const;
 
+export const AdActive = {
+    inactive: { value: 0, label: '禁用' },
+    active: { value: 1, label: '启用' },
+};
+
 export const ReviewStatus = {
-    pending: 0,
-    approved: 1,
-    rejected: 2,
+    pending: { value: 0, label: '待审核' },
+    approved: { value: 1, label: '已通过' },
+    rejected: { value: 2, label: '已拒绝' },
 } as const;
 
 export type AdDetails = {
@@ -29,7 +34,7 @@ export type AdDetails = {
     adLayout: ValueOf<typeof AdLayout>;
     weeklyBudget: number;
     reviewStatus: ValueOf<typeof ReviewStatus>;
-    isActive: number;
+    isActive: ValueOf<typeof AdActive>;
     createTime: string;
     editTime: string;
 };
@@ -41,8 +46,8 @@ export type AdMeta = Pick<
 
 export const advListAdsApi = (
     params?: PaginationParams & {
-        isActive?: boolean;
-        reviewStatus?: 'pending' | 'approved' | 'rejected';
+        isActive?: ValueOf<typeof AdActive>;
+        reviewStatus?: ValueOf<typeof ReviewStatus>;
     },
 ) => {
     return request<ApiResponse<Pagination<AdDetails>>>('/advertisers/ads', {
@@ -97,7 +102,10 @@ export const advGetStatOverviewApi = () => {
     >('/advertisers/statistics/summary', { method: 'GET' });
 };
 
-export const advToggleAdStatusApi = (adId: string, body: { isActive: boolean }) => {
+export const advToggleAdStatusApi = (
+    adId: string,
+    body: { isActive: ValueOf<typeof AdActive> },
+) => {
     return request<ApiResponse<AdDetails>>(`/advertisers/ads/${adId}/status`, {
         method: 'PUT',
         body,

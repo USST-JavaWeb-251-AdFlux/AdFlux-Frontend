@@ -48,7 +48,9 @@ const navigateToRegister = () => router.push({ name: 'Register' });
             label-position="right"
             :model="form"
             :rules="rules"
+            :disabled="loading"
             v-loading="loading"
+            element-loading-background="rgba(0, 0, 0, 0)"
             @submit.prevent="onSubmit"
         >
             <ElFormItem label="用户名" prop="username">

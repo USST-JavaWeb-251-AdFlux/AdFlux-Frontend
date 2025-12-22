@@ -34,7 +34,7 @@ const menuRoutes = computed(() => {
             .filter((r) => !r.meta?.hidden)
             .map((r) => ({
                 ...r,
-                fullPath: router.resolve(r).fullPath,
+                fullPath: router.resolve({ name: r.name }).fullPath,
             }));
     }
 

@@ -24,8 +24,21 @@ export default defineConfig(({ mode }) => {
             }),
             ElementPlus({
                 defaultLocale: 'zh-CN',
+                useSource: true,
             }),
         ],
+        css: {
+            preprocessorOptions: {
+                scss: {
+                    additionalData: (source: string, filePath: string) => {
+                        if (filePath.endsWith('src/styles/element.scss')) {
+                            return source;
+                        }
+                        return `@use "@/styles/element.scss" as *;\n${source}`;
+                    },
+                },
+            },
+        },
         resolve: {
             alias: {
                 '@': fileURLToPath(new URL('./src', import.meta.url)),

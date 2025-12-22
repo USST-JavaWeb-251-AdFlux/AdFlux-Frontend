@@ -12,7 +12,7 @@ import {
     advListAdsApi,
     advToggleAdStatusApi,
 } from '@/apis/advApis';
-import { type ValueOf, getLabel } from '@/utils/enum';
+import { type ValueOf, getLabel, getType } from '@/utils/enum';
 
 const loading = ref(false);
 const ads = ref<AdDetails[]>([]);
@@ -176,29 +176,14 @@ onMounted(fetchAds);
                                 <div class="ad-header">
                                     <h3 class="ad-title">{{ ad.title || '未命名广告' }}</h3>
                                     <ElTag
-                                        :type="
-                                            (
-                                                {
-                                                    [ReviewStatus.pending.value]: 'warning',
-                                                    [ReviewStatus.approved.value]: 'success',
-                                                    [ReviewStatus.rejected.value]: 'danger',
-                                                } as const
-                                            )[ad.reviewStatus]
-                                        "
+                                        :type="getType(ReviewStatus, ad.reviewStatus)"
                                         size="small"
                                         disable-transitions
                                     >
                                         {{ getLabel(ReviewStatus, ad.reviewStatus) }}
                                     </ElTag>
                                     <ElTag
-                                        :type="
-                                            (
-                                                {
-                                                    [AdActive.active.value]: 'success',
-                                                    [AdActive.inactive.value]: 'info',
-                                                } as const
-                                            )[ad.isActive]
-                                        "
+                                        :type="getType(AdActive, ad.isActive)"
                                         size="small"
                                         disable-transitions
                                     >

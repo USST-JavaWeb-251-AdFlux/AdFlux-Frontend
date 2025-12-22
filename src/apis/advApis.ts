@@ -14,14 +14,14 @@ export const AdLayout = {
 } as const;
 
 export const AdActive = {
-    inactive: { value: 0, label: '禁用' },
-    active: { value: 1, label: '启用' },
-};
+    inactive: { value: 0, label: '禁用', type: 'info' },
+    active: { value: 1, label: '启用', type: 'success' },
+} as const;
 
 export const ReviewStatus = {
-    pending: { value: 0, label: '待审核' },
-    approved: { value: 1, label: '已通过' },
-    rejected: { value: 2, label: '已拒绝' },
+    pending: { value: 0, label: '待审核', type: 'warning' },
+    approved: { value: 1, label: '已通过', type: 'success' },
+    rejected: { value: 2, label: '已拒绝', type: 'danger' },
 } as const;
 
 export type AdDetails = {

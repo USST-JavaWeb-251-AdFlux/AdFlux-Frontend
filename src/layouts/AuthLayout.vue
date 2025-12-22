@@ -114,6 +114,10 @@ onUnmounted(() => {
 <template>
     <div class="auth-root">
         <canvas ref="bgCanvas" class="bg-canvas"></canvas>
+        <div class="logo-container">
+            <img src="@/assets/logo.png" alt="Logo" />
+            <span>AdFlux</span>
+        </div>
         <ElCard class="auth-card">
             <RouterView v-slot="{ Component }">
                 <Transition name="fade" mode="out-in">
@@ -144,6 +148,37 @@ onUnmounted(() => {
         z-index: 0;
         filter: blur(100px); /* 使用 CSS 模糊滤镜将球体融合成渐变 */
         transform: scale(1.2); /* 放大一点以消除边缘模糊带来的白边 */
+    }
+
+    .logo-container {
+        position: absolute;
+        top: 24px;
+        left: 24px;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        user-select: none;
+
+        img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        span {
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 32px;
+            color: var(--el-text-color-primary);
+            letter-spacing: 0.5px;
+        }
     }
 
     .auth-card {

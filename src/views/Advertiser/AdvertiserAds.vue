@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue';
-import { Picture as IconPicture, Search } from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import {
     AdActive,
@@ -11,6 +10,7 @@ import {
     advListAdsApi,
     advToggleAdStatusApi,
 } from '@/apis/advApis';
+import router from '@/router';
 import { type ValueOf } from '@/utils/enum';
 
 const loading = ref(false);
@@ -93,6 +93,18 @@ const handleDelete = async (ad: AdDetails) => {
     }
 };
 
+const handleDetails = (ad: AdDetails) => {
+    router.push({ name: 'AdvertiserAdDetail', params: { adId: ad.adId } });
+};
+
+const handleEdit = (ad: AdDetails) => {
+    router.push({ name: 'AdvertiserAdEdit', params: { adId: ad.adId } });
+};
+
+const handleCreate = () => {
+    router.push({ name: 'AdvertiserAdCreate' });
+};
+
 onMounted(fetchAds);
 </script>
 
@@ -100,6 +112,7 @@ onMounted(fetchAds);
     <div class="ads-container">
         <div class="header-bar">
             <div class="filters">
+                <ElButton icon="Plus" type="primary" @click="handleCreate">创建广告</ElButton>
                 <ElSelect
                     v-model="filter.reviewStatus"
                     placeholder="审核状态"
@@ -128,7 +141,7 @@ onMounted(fetchAds);
                         :value="opt.value"
                     />
                 </ElSelect>
-                <ElButton type="primary" :icon="Search" @click="fetchAds">查询</ElButton>
+                <ElButton icon="Search" @click="fetchAds" plain>查询</ElButton>
             </div>
             <div class="pagination-wrapper">
                 <ElPagination
@@ -147,7 +160,13 @@ onMounted(fetchAds);
             </div>
             <ElScrollbar v-else>
                 <div class="ads-list">
-                    <ElCard v-for="ad in ads" :key="ad.adId" class="ad-item" shadow="hover">
+                    <ElCard
+                        v-for="ad in ads"
+                        :key="ad.adId"
+                        class="ad-item"
+                        shadow="hover"
+                        @click="handleDetails(ad)"
+                    >
                         <div class="ad-content">
                             <div class="ad-media">
                                 <ElImage
@@ -158,7 +177,7 @@ onMounted(fetchAds);
                                 >
                                     <template #error>
                                         <div class="image-slot">
-                                            <ElIcon><IconPicture /></ElIcon>
+                                            <ElIcon><Picture /></ElIcon>
                                         </div>
                                     </template>
                                 </ElImage>
@@ -226,14 +245,16 @@ onMounted(fetchAds);
                                             : 'success'
                                     "
                                     link
-                                    @click="handleToggleStatus(ad)"
+                                    @click.stop="handleToggleStatus(ad)"
                                 >
                                     {{ ad.isActive === AdActive.active.value ? '禁用' : '启用' }}
                                 </ElButton>
                                 <ElDivider direction="vertical" />
-                                <ElButton type="primary" link>编辑</ElButton>
+                                <ElButton type="primary" link @click.stop="handleEdit(ad)"
+                                    >编辑</ElButton
+                                >
                                 <ElDivider direction="vertical" />
-                                <ElButton type="danger" link @click="handleDelete(ad)"
+                                <ElButton type="danger" link @click.stop="handleDelete(ad)"
                                     >删除</ElButton
                                 >
                             </div>
@@ -291,6 +312,8 @@ onMounted(fetchAds);
             padding-bottom: 20px;
 
             .ad-item {
+                cursor: pointer;
+
                 :deep(.el-card__body) {
                     padding: 15px;
                 }

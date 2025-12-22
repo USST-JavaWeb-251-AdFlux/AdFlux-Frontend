@@ -28,7 +28,7 @@ const fetchCategories = async () => {
         const res = await advListCategories();
         categories.value = res.data;
     } catch (error) {
-        console.error(error);
+        ElMessage.error(`获取分类失败：${(error as Error).message}`);
     }
 };
 

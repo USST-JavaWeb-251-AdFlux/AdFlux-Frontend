@@ -52,17 +52,7 @@ const fetchAdDetails = async () => {
     loading.value = true;
     try {
         const res = await advGetAdByIdApi(props.adId);
-        const { title, adType, mediaUrl, landingPage, categoryId, adLayout, weeklyBudget } =
-            res.data;
-        Object.assign(formData, {
-            title,
-            adType,
-            mediaUrl,
-            landingPage,
-            categoryId,
-            adLayout,
-            weeklyBudget,
-        });
+        Object.assign(formData, res.data);
     } catch (error) {
         ElMessage.error(`获取详情失败：${(error as Error).message}`);
     } finally {

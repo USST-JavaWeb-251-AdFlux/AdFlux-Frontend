@@ -75,20 +75,23 @@ const handleToggleStatus = async (ad: AdDetails) => {
     }
 };
 
-const handleDelete = (ad: AdDetails) => {
-    ElMessageBox.confirm('确定要删除这个广告吗？', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-    }).then(async () => {
-        try {
-            await advDeleteAdApi(ad.adId);
-            ElMessage.success('删除成功');
-            fetchAds();
-        } catch (error) {
-            ElMessage.error(`删除失败：${(error as Error).message}`);
-        }
-    });
+const handleDelete = async (ad: AdDetails) => {
+    try {
+        await ElMessageBox.confirm('确定要删除这个广告吗？', '警告', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+        });
+    } catch {
+        return;
+    }
+    try {
+        await advDeleteAdApi(ad.adId);
+        ElMessage.success('删除成功');
+        fetchAds();
+    } catch (error) {
+        ElMessage.error(`删除失败：${(error as Error).message}`);
+    }
 };
 
 onMounted(fetchAds);

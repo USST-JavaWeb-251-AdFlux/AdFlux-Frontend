@@ -4,12 +4,14 @@ import { useRouter } from 'vue-router';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import {
     AdActive,
+    type AdCategory,
     type AdDetails,
     AdLayout,
     AdType,
     ReviewStatus,
     advDeleteAdApi,
     advGetAdByIdApi,
+    advListCategories,
     advToggleAdStatusApi,
 } from '@/apis/advApis';
 import { formatDateTime } from '@/utils/tools';
@@ -19,6 +21,21 @@ const router = useRouter();
 
 const loading = ref(true);
 const ad = ref<AdDetails>();
+const categories = ref<AdCategory[]>([]);
+
+const fetchCategories = async () => {
+    try {
+        const res = await advListCategories();
+        categories.value = res.data;
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+const getCategoryName = (id: string) => {
+    const cat = categories.value.find((c) => c.categoryId === id);
+    return cat ? cat.categoryName : id;
+};
 
 const fetchAdDetails = async () => {
     loading.value = true;
@@ -77,7 +94,10 @@ const handleDelete = async () => {
     }
 };
 
-onMounted(fetchAdDetails);
+onMounted(() => {
+    fetchAdDetails();
+    fetchCategories();
+});
 </script>
 
 <template>
@@ -162,7 +182,9 @@ onMounted(fetchAdDetails);
                                 >{{ ad.landingPage }}</a
                             >
                         </ElDescriptionsItem>
-                        <ElDescriptionsItem label="分类ID">{{ ad.categoryId }}</ElDescriptionsItem>
+                        <ElDescriptionsItem label="分类">{{
+                            getCategoryName(ad.categoryId)
+                        }}</ElDescriptionsItem>
                         <ElDescriptionsItem label="创建时间">{{
                             formatDateTime(ad.createTime)
                         }}</ElDescriptionsItem>

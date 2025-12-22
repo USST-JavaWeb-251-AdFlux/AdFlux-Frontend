@@ -147,3 +147,13 @@ export const advGetProfileApi = () => {
         }>
     >('/advertisers/profile', { method: 'GET' });
 };
+
+export type AdCategory = {
+    categoryId: string;
+    categoryName: string;
+    createTime: string;
+};
+
+export const advListCategories = () => {
+    return request<ApiResponse<AdCategory[]>>('/advertisers/categories', { method: 'GET' });
+};

@@ -3,11 +3,13 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus';
 import {
+    type AdCategory,
     AdLayout,
     type AdMeta,
     AdType,
     advCreateAdApi,
     advGetAdByIdApi,
+    advListCategories,
     advUpdateAdApi,
 } from '@/apis/advApis';
 
@@ -16,6 +18,7 @@ const router = useRouter();
 const formRef = useTemplateRef<FormInstance>('formRef');
 const loading = ref(true);
 const submitting = ref(false);
+const categories = ref<AdCategory[]>([]);
 
 const isEdit = computed(() => !!props.adId);
 
@@ -34,10 +37,15 @@ const rules = reactive<FormRules<AdMeta>>({
     adType: [{ required: true, message: '请选择广告类型', trigger: 'change' }],
     mediaUrl: [{ required: true, message: '请输入媒体URL', trigger: 'blur' }],
     landingPage: [{ required: true, message: '请输入落地页URL', trigger: 'blur' }],
-    categoryId: [{ required: true, message: '请输入分类ID', trigger: 'blur' }],
+    categoryId: [{ required: true, message: '请选择分类', trigger: 'change' }],
     adLayout: [{ required: true, message: '请选择广告布局', trigger: 'change' }],
     weeklyBudget: [{ required: true, message: '请输入周预算', trigger: 'blur' }],
 });
+
+const fetchCategories = async () => {
+    const res = await advListCategories();
+    categories.value = res.data;
+};
 
 const fetchAdDetails = async () => {
     if (!props.adId) return;
@@ -93,9 +101,11 @@ const handleCancel = () => {
 };
 
 onMounted(async () => {
+    const tasks = [fetchCategories()];
     if (isEdit.value) {
-        await fetchAdDetails();
+        tasks.push(fetchAdDetails());
     }
+    await Promise.allSettled(tasks);
     loading.value = false;
 });
 </script>
@@ -149,8 +159,15 @@ onMounted(async () => {
                     <ElInput v-model="formData.landingPage" placeholder="https://..." />
                 </ElFormItem>
 
-                <ElFormItem label="分类ID" prop="categoryId">
-                    <ElInput v-model="formData.categoryId" placeholder="请输入分类ID" />
+                <ElFormItem label="分类" prop="categoryId">
+                    <ElSelect v-model="formData.categoryId" placeholder="请选择分类">
+                        <ElOption
+                            v-for="cat in categories"
+                            :key="cat.categoryId"
+                            :label="cat.categoryName"
+                            :value="cat.categoryId"
+                        />
+                    </ElSelect>
                 </ElFormItem>
 
                 <ElFormItem label="周预算" prop="weeklyBudget">

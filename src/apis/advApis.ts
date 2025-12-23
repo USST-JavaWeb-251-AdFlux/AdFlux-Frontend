@@ -114,7 +114,7 @@ export const advToggleAdStatusApi = (
 
 export const advAddCompanyNameApi = (body: { companyName: string }) => {
     return request<ApiResponse<{ companyName: string }>>('/advertisers/company-name', {
-        method: 'POST',
+        method: 'PUT',
         body,
     });
 };

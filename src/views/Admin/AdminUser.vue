@@ -87,10 +87,17 @@ onMounted(fetchUsers);
         </div>
 
         <ElTable v-loading="loading" :data="users" style="width: 100%">
-            <ElTableColumn prop="username" label="用户名" />
-            <ElTableColumn prop="email" label="邮箱" />
-            <ElTableColumn prop="phone" label="电话" />
-            <ElTableColumn prop="userRole" label="角色">
+            <ElTableColumn prop="username" label="用户名" sortable />
+            <ElTableColumn prop="email" label="邮箱" sortable />
+            <ElTableColumn prop="phone" label="电话" sortable />
+            <ElTableColumn
+                prop="userRole"
+                label="角色"
+                :filters="
+                    Object.values(UserRole).map((role) => ({ text: role.label, value: role.value }))
+                "
+                :filter-method="(value, row) => row.userRole === value"
+            >
                 <template #default="{ row }">
                     <ElTag
                         :style="{
@@ -106,6 +113,7 @@ onMounted(fetchUsers);
             <ElTableColumn
                 prop="createTime"
                 label="注册时间"
+                sortable
                 :formatter="({ createTime }) => formatDateTime(createTime)"
             />
         </ElTable>

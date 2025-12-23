@@ -188,6 +188,7 @@ const initChart = () => {
                 name: '点击量',
                 position: 'right',
                 minInterval: 1,
+                alignTicks: true,
             },
         ],
         series: [

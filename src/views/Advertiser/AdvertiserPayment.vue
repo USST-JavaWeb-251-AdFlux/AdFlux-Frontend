@@ -12,7 +12,7 @@ const loading = ref(false);
 const paymentMethods = ref<PaymentMethod[]>([]);
 const dialogVisible = ref(false);
 const submitLoading = ref(false);
-const formRef = ref<FormInstance>();
+const formRef = useTemplateRef<FormInstance>('formRef');
 
 const form = reactive({
     bankName: '',
@@ -83,31 +83,32 @@ const fetchPaymentMethods = async () => {
 };
 
 const handleAdd = () => {
-    form.bankName = '';
-    form.cardNumber = '';
+    formRef.value?.resetFields();
+    currentCardType.value = '';
     dialogVisible.value = true;
 };
 
-const handleSubmit = async (formEl: FormInstance | undefined) => {
-    if (!formEl) return;
-    await formEl.validate(async (valid) => {
-        if (valid) {
-            submitLoading.value = true;
-            try {
-                await advAddPaymentMethodApi({
-                    bankName: form.bankName,
-                    cardNumber: form.cardNumber,
-                });
-                ElMessage.success('添加支付方式成功');
-                dialogVisible.value = false;
-                fetchPaymentMethods();
-            } catch (error) {
-                ElMessage.error(`添加支付方式失败：${(error as Error).message}`);
-            } finally {
-                submitLoading.value = false;
-            }
-        }
-    });
+const handleSubmit = async () => {
+    if (!formRef.value) return;
+    try {
+        await formRef.value.validate();
+    } catch {
+        return;
+    }
+    submitLoading.value = true;
+    try {
+        await advAddPaymentMethodApi({
+            bankName: form.bankName,
+            cardNumber: form.cardNumber,
+        });
+        ElMessage.success('添加支付方式成功');
+        dialogVisible.value = false;
+        fetchPaymentMethods();
+    } catch (error) {
+        ElMessage.error(`添加支付方式失败：${(error as Error).message}`);
+    } finally {
+        submitLoading.value = false;
+    }
 };
 
 onMounted(() => {
@@ -141,7 +142,9 @@ onMounted(() => {
                                 v-if="currentCardLogo"
                                 :src="currentCardLogo"
                                 class="cardLogo"
-                                :alt="currentCardType ? `${currentCardType} card` : 'Bank card logo'"
+                                :alt="
+                                    currentCardType ? `${currentCardType} card` : 'Bank card logo'
+                                "
                             />
                         </template>
                     </ElInput>
@@ -150,11 +153,7 @@ onMounted(() => {
             <template #footer>
                 <span class="dialog-footer">
                     <ElButton @click="dialogVisible = false">取消</ElButton>
-                    <ElButton
-                        type="primary"
-                        :loading="submitLoading"
-                        @click="handleSubmit(formRef)"
-                    >
+                    <ElButton type="primary" :loading="submitLoading" @click="handleSubmit">
                         确定
                     </ElButton>
                 </span>

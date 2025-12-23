@@ -342,7 +342,7 @@ onUnmounted(() => {
                             v-if="ad.reviewStatus === ReviewStatus.rejected.value"
                             label="审核拒绝原因"
                         >
-                            <ElText type="danger">{{ ad.rejectReason }}</ElText>
+                            <ElText type="danger">{{ ad.rejectReason || '未提供拒绝原因' }}</ElText>
                         </ElDescriptionsItem>
                         <ElDescriptionsItem label="类型">{{
                             AdType(ad.adType)?.label

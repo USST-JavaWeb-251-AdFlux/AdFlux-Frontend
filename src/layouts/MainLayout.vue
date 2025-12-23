@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
+import { UserRole } from '@/apis/authApis';
 import { useAuthStore } from '@/stores/auth';
 
 const router = useRouter();
@@ -69,14 +70,7 @@ const activeMenu = computed(() => route.path);
             <div class="user-info">
                 <ElDropdown @command="handleCommand">
                     <span class="el-dropdown-link">
-                        {{
-                            {
-                                admin: '管理员',
-                                advertiser: '广告主',
-                                publisher: '发布主',
-                            }[authStore.role]
-                        }}
-                        - {{ authStore.username }}
+                        {{ UserRole(authStore.role).label }} - {{ authStore.username }}
                         <ElIcon class="el-icon--right">
                             <ArrowDown />
                         </ElIcon>

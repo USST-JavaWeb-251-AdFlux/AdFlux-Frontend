@@ -2,8 +2,10 @@
 import { reactive } from 'vue';
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus';
 import { authRegisterApi } from '@/apis/authApis';
+import { UserRole } from '@/apis/authApis';
+import type { ValueOf } from '@/utils/enum';
 
-const { role } = defineProps<{ role: 'advertiser' | 'publisher' }>();
+const { role } = defineProps<{ role: Exclude<ValueOf<typeof UserRole>, 'admin'> }>();
 
 const formRef = useTemplateRef<FormInstance>('registerForm');
 
@@ -72,7 +74,7 @@ const navigateToLogin = () => router.push({ name: 'Login' });
 
 <template>
     <div>
-        <h2>{{ { advertiser: '广告主', publisher: '发布主' }[role] }} - 注册</h2>
+        <h2>{{ UserRole(role).label }} - 注册</h2>
 
         <ElForm
             ref="registerForm"

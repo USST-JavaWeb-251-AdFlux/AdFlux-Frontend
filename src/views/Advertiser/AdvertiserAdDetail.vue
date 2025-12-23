@@ -153,7 +153,7 @@ onMounted(() => {
                         </ElImage>
                         <video
                             v-else-if="ad.adType === AdType.video.value"
-                            :src="ad.mediaUrl"
+                            :src="getFileFullPath(ad.mediaUrl)"
                             class="media-preview"
                             controls
                         ></video>

@@ -14,6 +14,7 @@ import {
     advListCategories,
     advToggleAdStatusApi,
 } from '@/apis/advApis';
+import { getFileFullPath } from '@/apis/request';
 import { formatDateTime } from '@/utils/tools';
 
 const props = defineProps<{ adId: string }>();
@@ -140,10 +141,9 @@ onMounted(() => {
                     <div class="media-container">
                         <ElImage
                             v-if="ad.adType === AdType.image.value"
-                            :src="ad.mediaUrl"
+                            :src="getFileFullPath(ad.mediaUrl)"
                             fit="contain"
                             class="media-preview"
-                            :preview-src-list="[ad.mediaUrl]"
                         >
                             <template #error>
                                 <div class="image-slot">

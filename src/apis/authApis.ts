@@ -3,9 +3,9 @@ import { request } from './request';
 import type { ApiResponse } from './types';
 
 export const UserRole = createEnum({
-    admin: { value: 'admin', label: '管理员' },
-    advertiser: { value: 'advertiser', label: '广告主' },
-    publisher: { value: 'publisher', label: '发布主' },
+    admin: { value: 'admin', label: '管理员', color: '#E91E63' },
+    advertiser: { value: 'advertiser', label: '广告主', color: '#3F51B5' },
+    publisher: { value: 'publisher', label: '发布主', color: '#009688' },
 } as const);
 
 export type UserInfo = {

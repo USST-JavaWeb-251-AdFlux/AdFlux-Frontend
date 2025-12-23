@@ -2,17 +2,17 @@ import { type ValueOf } from '@/utils/enum';
 import type { AdDetails, ReviewStatus } from './advApis';
 import type { UserRole } from './authApis';
 import { request } from './request';
-import type { ApiResponse, PaginationParams } from './types';
+import type { ApiResponse, Pagination, PaginationParams } from './types';
 
 export const listAllAdsApi = (
     params?: PaginationParams & { status?: ValueOf<typeof ReviewStatus> },
 ) => {
-    return request<ApiResponse<AdDetails[]>>('/admin/ads', { method: 'GET', params });
+    return request<ApiResponse<Pagination<AdDetails>>>(`/admin/ads`, { method: 'GET', params });
 };
 
 export const reviewAdApi = (
     adId: string,
-    body: { status: ValueOf<typeof ReviewStatus>; reason: string },
+    body: { reviewStatus: ValueOf<typeof ReviewStatus>; reason: string },
 ) => {
     return request<ApiResponse<AdDetails>>(`/admin/ads/${adId}/review`, { method: 'PUT', body });
 };

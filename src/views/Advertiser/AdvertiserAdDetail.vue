@@ -58,7 +58,7 @@ useResizeObserver(chartRef, () => {
 
 const dateRange = ref<[Date, Date]>();
 
-const shortcuts = [
+const shortcuts: { text: string; value: () => [Date, Date] }[] = [
     {
         text: '本自然周',
         value: () => {

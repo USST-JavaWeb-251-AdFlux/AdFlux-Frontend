@@ -260,11 +260,10 @@ const handleDelete = async () => {
 };
 
 onMounted(() => {
-    const end = new Date();
-    const start = new Date();
-    const day = start.getDay() || 7;
-    start.setTime(start.getTime() - 3600 * 1000 * 24 * (day - 1));
-    dateRange.value = [start, end];
+    const shortcut = shortcuts?.[0];
+    if (shortcut && typeof shortcut.value === 'function') {
+        dateRange.value = shortcut.value();
+    }
 
     fetchAdDetails();
     fetchCategories();

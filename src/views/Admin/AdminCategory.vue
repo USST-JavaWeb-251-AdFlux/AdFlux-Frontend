@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref } from 'vue';
 import { ElMessage } from 'element-plus';
 import { createCategoryApi } from '@/apis/adminApis';
-import { type AdCategory, advListCategories } from '@/apis/advApis';
+import { type AdCategory, listCategories } from '@/apis/commonApis';
 import { formatDateTime } from '@/utils/tools';
 
 const loading = ref(false);
@@ -15,7 +15,7 @@ const form = reactive({
 const fetchCategories = async () => {
     loading.value = true;
     try {
-        const res = await advListCategories();
+        const res = await listCategories();
         categories.value = res.data;
     } catch (error) {
         ElMessage.error(`获取分类列表失败：${(error as Error).message}`);

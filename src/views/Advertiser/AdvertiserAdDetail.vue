@@ -16,7 +16,6 @@ import { CanvasRenderer } from 'echarts/renderers';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import {
     AdActive,
-    type AdCategory,
     type AdDetails,
     AdLayout,
     AdType,
@@ -24,9 +23,9 @@ import {
     advDeleteAdApi,
     advGetAdByIdApi,
     advGetAdStatsApi,
-    advListCategories,
     advToggleAdStatusApi,
 } from '@/apis/advApis';
+import { type AdCategory, listCategories } from '@/apis/commonApis';
 import { getFileFullPath } from '@/apis/request';
 import { formatDateTime } from '@/utils/tools';
 
@@ -91,7 +90,7 @@ const shortcuts: { text: string; value: () => [Date, Date] }[] = [
 
 const fetchCategories = async () => {
     try {
-        const res = await advListCategories();
+        const res = await listCategories();
         categories.value = res.data;
     } catch (error) {
         ElMessage.error(`获取分类失败：${(error as Error).message}`);
@@ -339,6 +338,12 @@ onUnmounted(() => {
                 <div class="info-section">
                     <ElDescriptions :column="1" border>
                         <ElDescriptionsItem label="广告ID">{{ ad.adId }}</ElDescriptionsItem>
+                        <ElDescriptionsItem
+                            v-if="ad.reviewStatus === ReviewStatus.rejected.value"
+                            label="审核拒绝原因"
+                        >
+                            <ElText type="danger">{{ ad.rejectReason || '未提供拒绝原因' }}</ElText>
+                        </ElDescriptionsItem>
                         <ElDescriptionsItem label="类型">{{
                             AdType(ad.adType)?.label
                         }}</ElDescriptionsItem>

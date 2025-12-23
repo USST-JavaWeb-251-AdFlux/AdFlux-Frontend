@@ -34,6 +34,7 @@ export type AdDetails = {
     adLayout: ValueOf<typeof AdLayout>;
     weeklyBudget: number;
     reviewStatus: ValueOf<typeof ReviewStatus>;
+    rejectReason: string | null;
     isActive: ValueOf<typeof AdActive>;
     createTime: string;
     editTime: string;
@@ -146,14 +147,4 @@ export const advGetProfileApi = () => {
             userId: string;
         }>
     >('/advertisers/profile', { method: 'GET' });
-};
-
-export type AdCategory = {
-    categoryId: string;
-    categoryName: string;
-    createTime: string;
-};
-
-export const advListCategories = () => {
-    return request<ApiResponse<AdCategory[]>>('/advertisers/categories', { method: 'GET' });
 };

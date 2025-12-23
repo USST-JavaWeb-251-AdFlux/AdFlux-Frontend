@@ -41,7 +41,7 @@ export type AdDetails = {
 
 export type AdMeta = Pick<
     AdDetails,
-    'adLayout' | 'categoryId' | 'landingPage' | 'mediaUrl' | 'title' | 'weeklyBudget'
+    'adLayout' | 'adType' | 'categoryId' | 'landingPage' | 'mediaUrl' | 'title' | 'weeklyBudget'
 >;
 
 export const advListAdsApi = (
@@ -146,4 +146,14 @@ export const advGetProfileApi = () => {
             userId: string;
         }>
     >('/advertisers/profile', { method: 'GET' });
+};
+
+export type AdCategory = {
+    categoryId: string;
+    categoryName: string;
+    createTime: string;
+};
+
+export const advListCategories = () => {
+    return request<ApiResponse<AdCategory[]>>('/advertisers/categories', { method: 'GET' });
 };

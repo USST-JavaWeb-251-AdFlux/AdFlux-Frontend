@@ -3,3 +3,11 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+.el-input-number {
+    flex: 1;
+
+    .el-input__wrapper {
+        padding-left: 11px !important;
+    }
+}

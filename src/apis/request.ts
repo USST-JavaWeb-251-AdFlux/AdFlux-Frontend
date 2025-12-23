@@ -17,14 +17,21 @@ export async function request<T extends ApiResponse>(
 ): Promise<T> {
     const authStore = useAuthStore();
 
+    const headers = opts.headers ?? {};
+    if (!headers['Content-Type'] && opts.body && !(opts.body instanceof FormData)) {
+        headers['Content-Type'] = 'application/json';
+    }
+    if (!headers['Authorization'] && authStore.token) {
+        headers['Authorization'] = `Bearer ${authStore.token}`;
+    }
+
     const init: RequestInit = {
         method: opts.method ?? 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            ...(authStore.token ? { Authorization: `Bearer ${authStore.token}` } : {}),
-            ...(opts.headers ?? {}),
-        },
-        body: opts.body ? JSON.stringify(opts.body) : null,
+        body:
+            opts.body === undefined || opts.body instanceof FormData
+                ? opts.body
+                : JSON.stringify(opts.body),
+        headers,
     };
 
     const params = new URLSearchParams();
@@ -50,3 +57,7 @@ export async function request<T extends ApiResponse>(
 
     return result;
 }
+
+export const getFileFullPath = (filePath: string) => {
+    return `${apiHost}${filePath}`;
+};

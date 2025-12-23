@@ -33,7 +33,7 @@ const fetchProfile = async () => {
 
 const handleEditCompanyName = async () => {
     try {
-        const { value } = await ElMessageBox.prompt('请输入新的企业名称', '修改企业名称', {
+        const { value } = await ElMessageBox.prompt('设置企业名称后不可再次修改', '设置企业名称', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             inputValue: companyName.value,
@@ -63,8 +63,8 @@ onMounted(() => {
     <div class="home-container" v-loading="loading">
         <div class="header-section">
             <h1 class="company-title">{{ companyName || '未命名企业' }}</h1>
-            <ElButton type="primary" link @click="handleEditCompanyName">
-                <ElIcon class="mr-1"><Edit /></ElIcon> 修改
+            <ElButton v-if="!companyName" type="primary" link @click="handleEditCompanyName">
+                <ElIcon class="mr-1"><Edit /></ElIcon>设置
             </ElButton>
         </div>
 
@@ -95,6 +95,7 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .home-container {
+    height: 100%;
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;

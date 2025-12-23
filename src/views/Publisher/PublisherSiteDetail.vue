@@ -159,7 +159,7 @@ onMounted(fetchWebsite);
                         <h4>第三步：添加分类标识（可选）</h4>
                         <p>
                             如果想要更加精准投放广告，可以在每个页面的
-                            <code>&lt;header&gt;</code> 标签中，添加内容分类标识：
+                            <code>&lt;head&gt;</code> 标签中，添加内容分类标识：
                         </p>
                         <CodeBlock :code="categoryScript" />
                     </div>

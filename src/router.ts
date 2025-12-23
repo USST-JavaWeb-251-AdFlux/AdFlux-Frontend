@@ -76,16 +76,16 @@ const routes: RouteRecordRaw[] = [
                         props: true,
                     },
                     {
-                        path: 'adManage/create',
-                        name: 'AdvertiserAdCreate',
-                        meta: { title: '广告创建', hidden: true },
+                        path: 'adManage/:adId/edit',
+                        name: 'AdvertiserAdEdit',
+                        meta: { title: '广告编辑', hidden: true },
                         component: () => import('@/views/Advertiser/AdvertiserAdEdit.vue'),
                         props: true,
                     },
                     {
-                        path: 'adManage/:adId/edit',
-                        name: 'AdvertiserAdEdit',
-                        meta: { title: '广告编辑', hidden: true },
+                        path: 'adManage/create',
+                        name: 'AdvertiserAdCreate',
+                        meta: { title: '广告创建', hidden: true },
                         component: () => import('@/views/Advertiser/AdvertiserAdEdit.vue'),
                         props: true,
                     },
@@ -101,7 +101,7 @@ const routes: RouteRecordRaw[] = [
     },
 ];
 
-const router = createRouter({ history: createWebHistory(), routes });
+const router = createRouter({ history: createWebHistory(), routes, strict: true });
 
 router.beforeEach((to) => {
     const authStore = useAuthStore();

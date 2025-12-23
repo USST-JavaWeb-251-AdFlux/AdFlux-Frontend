@@ -1,6 +1,18 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useResizeObserver } from '@vueuse/core';
+import { LineChart, type LineSeriesOption } from 'echarts/charts';
+import {
+    GridComponent,
+    type GridComponentOption,
+    LegendComponent,
+    type LegendComponentOption,
+    TooltipComponent,
+    type TooltipComponentOption,
+} from 'echarts/components';
+import * as echarts from 'echarts/core';
+import { CanvasRenderer } from 'echarts/renderers';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import {
     AdActive,
@@ -11,11 +23,18 @@ import {
     ReviewStatus,
     advDeleteAdApi,
     advGetAdByIdApi,
+    advGetAdStatsApi,
     advListCategories,
     advToggleAdStatusApi,
 } from '@/apis/advApis';
 import { getFileFullPath } from '@/apis/request';
 import { formatDateTime } from '@/utils/tools';
+
+echarts.use([LineChart, TooltipComponent, GridComponent, LegendComponent, CanvasRenderer]);
+
+type ECOption = echarts.ComposeOption<
+    LineSeriesOption | TooltipComponentOption | GridComponentOption | LegendComponentOption
+>;
 
 const props = defineProps<{ adId: string }>();
 const router = useRouter();
@@ -23,6 +42,52 @@ const router = useRouter();
 const loading = ref(true);
 const ad = ref<AdDetails>();
 const categories = ref<AdCategory[]>([]);
+
+const stats = ref<{
+    ctr: number;
+    totalClicks: number;
+    totalImpressions: number;
+    daily: { clicks: number; date: string; impressions: number }[];
+}>();
+const chartRef = ref<HTMLElement>();
+let chartInstance: echarts.ECharts | null = null;
+
+useResizeObserver(chartRef, () => {
+    chartInstance?.resize();
+});
+
+const dateRange = ref<[Date, Date]>();
+
+const shortcuts: { text: string; value: () => [Date, Date] }[] = [
+    {
+        text: '本自然周',
+        value: () => {
+            const end = new Date();
+            const start = new Date();
+            const day = start.getDay() || 7;
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * (day - 1));
+            return [start, end];
+        },
+    },
+    {
+        text: '最近 7 天',
+        value: () => {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 6);
+            return [start, end];
+        },
+    },
+    {
+        text: '最近 30 天',
+        value: () => {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 29);
+            return [start, end];
+        },
+    },
+];
 
 const fetchCategories = async () => {
     try {
@@ -48,6 +113,106 @@ const fetchAdDetails = async () => {
     } finally {
         loading.value = false;
     }
+};
+
+const formatDateForApi = (d: Date) => {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
+
+const fetchStats = async () => {
+    try {
+        let params = {};
+        if (dateRange.value && dateRange.value.length === 2) {
+            params = {
+                startDate: formatDateForApi(dateRange.value[0]),
+                endDate: formatDateForApi(dateRange.value[1]),
+            };
+        }
+
+        const res = await advGetAdStatsApi(props.adId, params);
+        stats.value = res.data;
+        nextTick(() => {
+            initChart();
+        });
+    } catch (error) {
+        ElMessage.error(`获取统计数据失败：${(error as Error).message}`);
+    }
+};
+
+const initChart = () => {
+    if (!chartRef.value || !stats.value) return;
+
+    if (chartInstance) {
+        chartInstance.dispose();
+    }
+
+    chartInstance = echarts.init(chartRef.value);
+
+    const dates = stats.value.daily.map((d) => d.date);
+    const clicks = stats.value.daily.map((d) => d.clicks);
+    const impressions = stats.value.daily.map((d) => d.impressions);
+
+    const option: ECOption = {
+        tooltip: {
+            trigger: 'axis',
+        },
+        legend: {
+            data: ['展示量', '点击量'],
+        },
+        grid: {
+            left: '4%',
+            right: '4%',
+            bottom: '12%',
+            containLabel: true,
+        },
+        xAxis: {
+            type: 'category',
+            data: dates,
+            axisLabel: {
+                rotate: 0,
+                interval: 'auto',
+                hideOverlap: true,
+            },
+        },
+        yAxis: [
+            {
+                type: 'value',
+                name: '展示量',
+                position: 'left',
+                minInterval: 1,
+            },
+            {
+                type: 'value',
+                name: '点击量',
+                position: 'right',
+                minInterval: 1,
+                alignTicks: true,
+            },
+        ],
+        series: [
+            {
+                name: '展示量',
+                type: 'line',
+                data: impressions,
+                yAxisIndex: 0,
+                smooth: true,
+                itemStyle: { color: '#F44336' },
+            },
+            {
+                name: '点击量',
+                type: 'line',
+                data: clicks,
+                yAxisIndex: 1,
+                smooth: true,
+                itemStyle: { color: '#2196F3' },
+            },
+        ],
+    };
+
+    chartInstance.setOption(option);
 };
 
 const handleBack = () => {
@@ -96,8 +261,18 @@ const handleDelete = async () => {
 };
 
 onMounted(() => {
+    const shortcut = shortcuts?.[0];
+    if (shortcut && typeof shortcut.value === 'function') {
+        dateRange.value = shortcut.value();
+    }
+
     fetchAdDetails();
     fetchCategories();
+    fetchStats();
+});
+
+onUnmounted(() => {
+    chartInstance?.dispose();
 });
 </script>
 
@@ -194,6 +369,38 @@ onMounted(() => {
                     </ElDescriptions>
                 </div>
             </div>
+
+            <div class="stats-section" v-if="stats">
+                <div class="section-title">数据统计</div>
+                <div class="filter-container">
+                    <span class="label">展示周期：</span>
+                    <ElDatePicker
+                        v-model="dateRange"
+                        type="daterange"
+                        unlink-panels
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        :shortcuts="shortcuts"
+                        @change="fetchStats"
+                    />
+                </div>
+                <div class="stats-summary">
+                    <ElCard shadow="hover" class="stat-item">
+                        <template #header>总展示量</template>
+                        <div class="stat-value">{{ stats.totalImpressions }}</div>
+                    </ElCard>
+                    <ElCard shadow="hover" class="stat-item">
+                        <template #header>总点击量</template>
+                        <div class="stat-value">{{ stats.totalClicks }}</div>
+                    </ElCard>
+                    <ElCard shadow="hover" class="stat-item">
+                        <template #header>点击率 (CTR)</template>
+                        <div class="stat-value">{{ (stats.ctr * 100).toFixed(2) }}%</div>
+                    </ElCard>
+                </div>
+                <div class="chart-container" ref="chartRef"></div>
+            </div>
         </ElCard>
     </div>
 </template>
@@ -282,6 +489,52 @@ onMounted(() => {
                         text-decoration: underline;
                     }
                 }
+            }
+        }
+
+        .stats-section {
+            margin-top: 30px;
+            border-top: 1px solid var(--el-border-color-lighter);
+            padding-top: 20px;
+
+            .section-title {
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+
+            .filter-container {
+                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+
+                .label {
+                    margin-right: 10px;
+                    font-size: 14px;
+                    color: var(--el-text-color-regular);
+                }
+            }
+
+            .stats-summary {
+                display: flex;
+                gap: 20px;
+                margin-bottom: 20px;
+
+                .stat-item {
+                    flex: 1;
+                    text-align: center;
+
+                    .stat-value {
+                        font-size: 24px;
+                        font-weight: bold;
+                        color: var(--el-color-primary);
+                    }
+                }
+            }
+
+            .chart-container {
+                width: 100%;
+                height: 400px;
             }
         }
     }

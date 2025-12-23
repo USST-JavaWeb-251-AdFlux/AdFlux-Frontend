@@ -125,8 +125,29 @@ const routes: RouteRecordRaw[] = [
             {
                 path: '/publisher',
                 name: 'Publisher',
-                meta: { title: '控制台', role: 'publisher' },
-                component: () => import('@/views/Publisher/PublisherHome.vue'),
+                meta: { role: 'publisher' },
+                redirect: { name: 'PublisherHome' },
+                children: [
+                    {
+                        path: 'dashboard',
+                        name: 'PublisherHome',
+                        meta: { title: '控制台' },
+                        component: () => import('@/views/Publisher/PublisherHome.vue'),
+                    },
+                    {
+                        path: 'websites',
+                        name: 'PublisherSites',
+                        meta: { title: '网站管理' },
+                        component: () => import('@/views/Publisher/PublisherSites.vue'),
+                    },
+                    {
+                        path: 'websites/:websiteId',
+                        name: 'PublisherSiteDetail',
+                        meta: { title: '网站详情', hidden: true },
+                        component: () => import('@/views/Publisher/PublisherSiteDetail.vue'),
+                        props: true,
+                    },
+                ],
             },
         ],
     },

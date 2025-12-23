@@ -3,8 +3,8 @@ import { request } from './request';
 import type { ApiResponse } from './types';
 
 export const WebsiteVerification = createEnum({
-    unverified: { value: 0, label: '未验证' },
-    verified: { value: 1, label: '已验证' },
+    unverified: { value: 0, label: '未验证', type: 'warning' },
+    verified: { value: 1, label: '已验证', type: 'success' },
 } as const);
 
 export type WebsiteDetails = {
@@ -28,6 +28,12 @@ export const pubCreateSiteApi = (body: WebsiteMeta) => {
 
 export const pubListSitesApi = () => {
     return request<ApiResponse<WebsiteDetails[]>>('/publishers/sites', {
+        method: 'GET',
+    });
+};
+
+export const getSiteDetailsApi = (websiteId: string) => {
+    return request<ApiResponse<WebsiteDetails>>(`/publishers/sites/${websiteId}`, {
         method: 'GET',
     });
 };

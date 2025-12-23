@@ -68,7 +68,7 @@ onMounted(fetchCategories);
 
         <ElDialog v-model="dialogVisible" title="添加分类" width="400px">
             <ElForm :model="form">
-                <ElFormItem label="分类名称">
+                <ElFormItem label="分类名称" prop="categoryName">
                     <ElInput v-model="form.categoryName" placeholder="请输入分类名称" />
                 </ElFormItem>
             </ElForm>

@@ -241,7 +241,7 @@ onMounted(fetchAds);
                                     >
                                         <span class="label">审核拒绝原因：</span>
                                         <ElText size="small" type="danger">{{
-                                            ad.rejectReason
+                                            ad.rejectReason || '未提供拒绝原因'
                                         }}</ElText>
                                     </div>
                                 </div>

@@ -115,19 +115,20 @@ const fetchAdDetails = async () => {
     }
 };
 
+const formatDateForApi = (d: Date) => {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
+
 const fetchStats = async () => {
     try {
         let params = {};
         if (dateRange.value && dateRange.value.length === 2) {
-            const formatDate = (d: Date) => {
-                const year = d.getFullYear();
-                const month = String(d.getMonth() + 1).padStart(2, '0');
-                const day = String(d.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            };
             params = {
-                startDate: formatDate(dateRange.value[0]),
-                endDate: formatDate(dateRange.value[1]),
+                startDate: formatDateForApi(dateRange.value[0]),
+                endDate: formatDateForApi(dateRange.value[1]),
             };
         }
 

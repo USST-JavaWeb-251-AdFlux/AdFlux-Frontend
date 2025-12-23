@@ -141,7 +141,7 @@ onMounted(() => {
                                 v-if="currentCardLogo"
                                 :src="currentCardLogo"
                                 class="cardLogo"
-                                alt="card-logo"
+                                :alt="currentCardType ? `${currentCardType} card` : 'Bank card logo'"
                             />
                         </template>
                     </ElInput>

@@ -41,7 +41,7 @@ const handleEditCompanyName = async () => {
             inputErrorMessage: '企业名称不能为空',
         });
 
-        await advAddCompanyNameApi({ companyName: value });
+        await advAddCompanyNameApi({ companyName: value.trim() });
         await fetchProfile();
         ElMessage.success('修改成功');
     } catch (error) {

@@ -221,7 +221,7 @@ onMounted(fetchAds);
                                     </div> -->
                                     <div class="detail-item">
                                         <span class="label">预算：</span>
-                                        <span>¥{{ ad.weeklyBudget }} / 周</span>
+                                        <span>¥{{ ad.weeklyBudget.toFixed(2) }} / 周</span>
                                     </div>
                                     <div class="detail-item full-width">
                                         <span class="label">落地页：</span>

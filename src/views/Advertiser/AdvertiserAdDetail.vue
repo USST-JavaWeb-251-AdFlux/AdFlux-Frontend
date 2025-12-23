@@ -171,7 +171,7 @@ onMounted(() => {
                             AdLayout(ad.adLayout)?.label
                         }}</ElDescriptionsItem>
                         <ElDescriptionsItem label="周预算">
-                            {{ ad.weeklyBudget }}
+                            ￥{{ ad.weeklyBudget.toFixed(2) }}
                         </ElDescriptionsItem>
                         <ElDescriptionsItem label="落地页">
                             <a

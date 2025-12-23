@@ -235,6 +235,15 @@ onMounted(fetchAds);
                                         >
                                         <span v-else>无</span>
                                     </div>
+                                    <div
+                                        v-if="ad.reviewStatus === ReviewStatus.rejected.value"
+                                        class="detail-item full-width"
+                                    >
+                                        <span class="label">审核拒绝原因：</span>
+                                        <ElText size="small" type="danger">{{
+                                            ad.rejectReason
+                                        }}</ElText>
+                                    </div>
                                 </div>
                             </div>
 

@@ -4,16 +4,16 @@ import { useRouter } from 'vue-router';
 import { useObjectUrl } from '@vueuse/core';
 import { ElMessage, type FormInstance, type FormRules, type UploadFile } from 'element-plus';
 import {
-    type AdCategory,
     AdLayout,
     type AdMeta,
     AdType,
     advCreateAdApi,
     advGetAdByIdApi,
-    advListCategories,
     advUpdateAdApi,
 } from '@/apis/advApis';
+import { type AdCategory, listCategories } from '@/apis/commonApis';
 import { uploadFileApi } from '@/apis/fileApis';
+import { getFileFullPath } from '@/apis/request';
 
 const props = defineProps<{ adId?: string }>();
 const router = useRouter();
@@ -71,7 +71,7 @@ watch(objectUrl, (url) => {
 });
 
 const fetchCategories = async () => {
-    const res = await advListCategories();
+    const res = await listCategories();
     categories.value = res.data;
 };
 
@@ -185,7 +185,11 @@ onMounted(async () => {
                         <div v-if="formData.mediaUrl" class="preview-container">
                             <img
                                 v-if="formData.adType === AdType.image.value"
-                                :src="formData.mediaUrl"
+                                :src="
+                                    formData.mediaUrl.startsWith('blob:')
+                                        ? formData.mediaUrl
+                                        : getFileFullPath(formData.mediaUrl)
+                                "
                                 class="media-preview"
                             />
                             <video v-else :src="formData.mediaUrl" class="media-preview" controls />

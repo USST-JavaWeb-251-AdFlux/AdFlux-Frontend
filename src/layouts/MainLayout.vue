@@ -73,7 +73,7 @@ const activeMenu = computed(() => route.path);
                             {
                                 admin: '管理员',
                                 advertiser: '广告主',
-                                publisher: '发布者',
+                                publisher: '发布主',
                             }[authStore.role]
                         }}
                         - {{ authStore.username }}

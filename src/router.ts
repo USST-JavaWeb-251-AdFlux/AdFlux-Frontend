@@ -69,6 +69,13 @@ const routes: RouteRecordRaw[] = [
                         component: () => import('@/views/Advertiser/AdvertiserAds.vue'),
                     },
                     {
+                        path: 'adManage/create',
+                        name: 'AdvertiserAdCreate',
+                        meta: { title: '广告创建', hidden: true },
+                        component: () => import('@/views/Advertiser/AdvertiserAdEdit.vue'),
+                        props: true,
+                    },
+                    {
                         path: 'adManage/:adId',
                         name: 'AdvertiserAdDetail',
                         meta: { title: '广告详情', hidden: true },
@@ -79,13 +86,6 @@ const routes: RouteRecordRaw[] = [
                         path: 'adManage/:adId/edit',
                         name: 'AdvertiserAdEdit',
                         meta: { title: '广告编辑', hidden: true },
-                        component: () => import('@/views/Advertiser/AdvertiserAdEdit.vue'),
-                        props: true,
-                    },
-                    {
-                        path: 'adManage/create',
-                        name: 'AdvertiserAdCreate',
-                        meta: { title: '广告创建', hidden: true },
                         component: () => import('@/views/Advertiser/AdvertiserAdEdit.vue'),
                         props: true,
                     },

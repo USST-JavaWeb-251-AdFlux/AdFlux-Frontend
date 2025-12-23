@@ -140,21 +140,5 @@ onMounted(() => {
             margin: 0;
         }
     }
-
-    .token-cell {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-
-        .token-text {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            font-family: monospace;
-            background-color: #f5f7fa;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-    }
 }
 </style>

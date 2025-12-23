@@ -28,8 +28,8 @@ class Orb {
 
         // 随机速度
         const speed = 2;
-        this.vx = (Math.random() - 0.5) * speed;
-        this.vy = (Math.random() - 0.5) * speed;
+        this.vx = (Math.random() > 0.5 ? 0.5 : -0.5) * (speed + Math.random() * speed);
+        this.vy = (Math.random() > 0.5 ? 0.5 : -0.5) * (speed + Math.random() * speed);
 
         this.color = colors[Math.floor(Math.random() * colors.length)] ?? colors[0];
     }

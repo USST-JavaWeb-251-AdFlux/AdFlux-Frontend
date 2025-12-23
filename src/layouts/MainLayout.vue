@@ -69,7 +69,14 @@ const activeMenu = computed(() => route.path);
             <div class="user-info">
                 <ElDropdown @command="handleCommand">
                     <span class="el-dropdown-link">
-                        {{ authStore.username }}
+                        {{
+                            {
+                                admin: '管理员',
+                                advertiser: '广告主',
+                                publisher: '发布主',
+                            }[authStore.role]
+                        }}
+                        - {{ authStore.username }}
                         <ElIcon class="el-icon--right">
                             <ArrowDown />
                         </ElIcon>

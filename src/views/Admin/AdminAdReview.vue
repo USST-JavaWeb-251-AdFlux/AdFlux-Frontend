@@ -29,13 +29,8 @@ const fetchAds = async () => {
             pageSize: pagination.pageSize,
             status: filter.status,
         });
-        if (Array.isArray(res.data)) {
-            ads.value = res.data;
-            total.value = res.data.length;
-        } else {
-            ads.value = res.data.records;
-            total.value = res.data.total;
-        }
+        ads.value = res.data.records;
+        total.value = res.data.total;
     } catch (error) {
         ElMessage.error(`获取广告列表失败：${(error as Error).message}`);
     } finally {

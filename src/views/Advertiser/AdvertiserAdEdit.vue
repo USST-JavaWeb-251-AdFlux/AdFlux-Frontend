@@ -39,7 +39,25 @@ const formData = reactive<AdMeta>({
 const rules = reactive<FormRules<AdMeta>>({
     title: [{ required: true, message: '请输入广告标题', trigger: 'blur' }],
     mediaUrl: [{ required: true, message: '请上传媒体文件', trigger: 'change' }],
-    landingPage: [{ required: true, message: '请输入落地页URL', trigger: 'blur' }],
+    landingPage: [
+        { required: true, message: '请输入落地页 URL', trigger: 'blur' },
+        {
+            validator: (_, value, callback) => {
+                if (!value) callback();
+                try {
+                    const url = new URL(value);
+                    if (url.protocol === 'https:') {
+                        callback();
+                    } else {
+                        callback('落地页 URL 仅支持 https 协议');
+                    }
+                } catch {
+                    callback('落地页 URL 格式不正确');
+                }
+            },
+            trigger: 'blur',
+        },
+    ],
     categoryId: [{ required: true, message: '请选择分类', trigger: 'change' }],
     adLayout: [{ required: true, message: '请选择广告布局', trigger: 'change' }],
     weeklyBudget: [{ required: true, message: '请输入周预算', trigger: 'blur' }],

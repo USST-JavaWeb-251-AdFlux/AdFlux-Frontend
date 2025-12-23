@@ -47,8 +47,34 @@ const routes: RouteRecordRaw[] = [
             {
                 path: '/admin',
                 name: 'Admin',
-                meta: { title: '控制台', role: 'admin' },
-                component: () => import('@/views/Admin/AdminHome.vue'),
+                meta: { role: 'admin' },
+                redirect: { name: 'AdminHome' },
+                children: [
+                    {
+                        path: 'dashboard',
+                        name: 'AdminHome',
+                        meta: { title: '控制台' },
+                        component: () => import('@/views/Admin/AdminHome.vue'),
+                    },
+                    {
+                        path: 'adReview',
+                        name: 'AdminAdReview',
+                        meta: { title: '广告审核' },
+                        component: () => import('@/views/Admin/AdminAdReview.vue'),
+                    },
+                    {
+                        path: 'users',
+                        name: 'AdminUser',
+                        meta: { title: '用户管理' },
+                        component: () => import('@/views/Admin/AdminUser.vue'),
+                    },
+                    {
+                        path: 'categories',
+                        name: 'AdminCategory',
+                        meta: { title: '分类管理' },
+                        component: () => import('@/views/Admin/AdminCategory.vue'),
+                    },
+                ],
             },
             {
                 path: '/advertiser',

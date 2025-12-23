@@ -192,7 +192,16 @@ onMounted(async () => {
                                 "
                                 class="media-preview"
                             />
-                            <video v-else :src="formData.mediaUrl" class="media-preview" controls />
+                            <video
+                                v-else
+                                :src="
+                                    formData.mediaUrl.startsWith('blob:')
+                                        ? formData.mediaUrl
+                                        : getFileFullPath(formData.mediaUrl)
+                                "
+                                class="media-preview"
+                                controls
+                            />
                             <div class="reupload-mask">
                                 <ElIcon><Plus /></ElIcon>
                                 <span>点击更换</span>

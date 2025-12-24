@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
-import { useObjectUrl } from '@vueuse/core';
-import { ElMessage, type FormInstance, type FormRules, type UploadFile } from 'element-plus';
+import type { FormInstance, FormRules, UploadFile } from 'element-plus';
 import {
     AdLayout,
     type AdMeta,

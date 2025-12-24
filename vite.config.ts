@@ -13,6 +13,11 @@ export default defineConfig(({ mode }) => {
             AutoImport({
                 imports: ['vue', 'vue-router', 'pinia', '@vueuse/core'],
                 dts: 'src/auto-imports.d.ts',
+                resolvers: [
+                    ElementPlusResolver({
+                        importStyle: 'sass',
+                    }),
+                ],
             }),
             Components({
                 resolvers: [

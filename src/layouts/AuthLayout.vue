@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, watch } from 'vue';
-import { useWindowSize } from '@vueuse/core';
-
 const bgCanvas = useTemplateRef('bgCanvas');
 const { width, height } = useWindowSize();
 let animationId: number;

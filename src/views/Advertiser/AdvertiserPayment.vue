@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue';
 import valid from 'card-validator';
-import { ElMessage, type FormInstance, type FormRules } from 'element-plus';
+import type { FormInstance, FormRules } from 'element-plus';
 import {
     type PaymentMethod,
     advAddPaymentMethodApi,

@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue';
-import { ElMessage } from 'element-plus';
 import { listAllAdsApi, reviewAdApi } from '@/apis/adminApis';
 import { AdActive, type AdDetails, AdType, ReviewStatus } from '@/apis/advApis';
 import { getFileFullPath } from '@/apis/request';
-import { type ValueOf } from '@/utils/enum';
+import type { ValueOf } from '@/utils/enum';
 
 const loading = ref(false);
 const ads = ref<AdDetails[]>([]);

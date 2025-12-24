@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ElMessage } from 'element-plus';
-
 const { code } = defineProps<{
     code: string;
 }>();

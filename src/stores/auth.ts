@@ -1,5 +1,4 @@
-import { defineStore } from 'pinia';
-import { StorageSerializers, useLocalStorage } from '@vueuse/core';
+import { StorageSerializers } from '@vueuse/core';
 import { authLoginApi } from '@/apis/authApis';
 import { capitalize } from '@/utils/tools';
 

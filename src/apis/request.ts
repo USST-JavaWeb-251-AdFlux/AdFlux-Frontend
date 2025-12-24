@@ -59,5 +59,5 @@ export async function request<T extends ApiResponse>(
 }
 
 export const getFileFullPath = (filePath: string) => {
-    return `${apiHost}${filePath}`;
+    return filePath ? `${apiHost}${filePath}` : '';
 };

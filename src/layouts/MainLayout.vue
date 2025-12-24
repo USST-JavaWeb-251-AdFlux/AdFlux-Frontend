@@ -88,7 +88,7 @@ const activeMenu = computed(() => route.path);
         <ElMain class="main">
             <RouterView v-slot="{ Component }">
                 <Transition name="fade" mode="out-in">
-                    <KeepAlive>
+                    <KeepAlive :include="/Home$/">
                         <component :is="Component" />
                     </KeepAlive>
                 </Transition>

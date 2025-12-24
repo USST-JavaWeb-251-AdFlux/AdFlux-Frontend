@@ -113,7 +113,7 @@ const handleSubmit = async (formEl: FormInstance | null) => {
         if (isEdit.value && adId) {
             await advUpdateAdApi(adId, formData);
             ElMessage.success('更新成功');
-            router.replace({ name: 'AdvertiserAdDetail', params: { adId: adId } });
+            router.replace({ name: 'AdvertiserAdDetail', params: { adId } });
         } else {
             const result = await advCreateAdApi(formData);
             ElMessage.success('创建成功');
@@ -140,6 +140,8 @@ onMounted(async () => {
 
             if (newAdId) {
                 await fetchAdDetails();
+            } else {
+                loading.value = false;
             }
         },
         { immediate: true },

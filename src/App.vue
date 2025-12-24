@@ -3,9 +3,10 @@ import zhCn from 'element-plus/es/locale/lang/zh-cn';
 
 const route = useRoute();
 const title = computed(() => {
-    const baseTitle = 'AdFlux';
+    const suffix = import.meta.env.DEV ? ' [DEV]' : '';
+    const baseTitle = 'AdFlux' + suffix;
     const routeTitle = route.meta.title;
-    return routeTitle ? `${routeTitle} | ${baseTitle}` : baseTitle;
+    return routeTitle ? `${routeTitle} | ${baseTitle}` : `${baseTitle}`;
 });
 useTitle(title);
 </script>

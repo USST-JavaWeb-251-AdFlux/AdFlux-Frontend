@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { ElMessage } from 'element-plus';
+import { ElMessage, type FormInstance, type FormRules } from 'element-plus';
 import {
     type WebsiteDetails,
     type WebsiteMeta,
@@ -15,15 +15,35 @@ const router = useRouter();
 const loading = ref(false);
 const websites = ref<WebsiteDetails[]>([]);
 const dialogVisible = ref(false);
-const formRef = ref();
+const formRef = useTemplateRef<FormInstance>('formRef');
 const form = reactive<WebsiteMeta>({
     websiteName: '',
     domain: '',
 });
 
-const rules = {
-    websiteName: [{ required: true, message: '请输入网站名称', trigger: 'blur' }],
-    domain: [{ required: true, message: '请输入域名', trigger: 'blur' }],
+const rules: FormRules<WebsiteMeta> = {
+    websiteName: [{ required: true, message: '请输入网站名称', trigger: 'change' }],
+    domain: [
+        {
+            required: true,
+            validator: (_, value, callback) => {
+                if (!value) {
+                    callback();
+                } else if (/^https?:\/\//.test(value)) {
+                    callback('请勿包含协议前缀（http / https），仅需输入域名');
+                } else if (
+                    !/^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*\.[a-z]{2,63}$/i.test(
+                        value,
+                    )
+                ) {
+                    callback('请输入有效的域名格式，如 example.com');
+                } else {
+                    callback();
+                }
+            },
+            trigger: ['blur', 'change'],
+        },
+    ],
 };
 
 const fetchWebsites = async () => {
@@ -39,30 +59,27 @@ const fetchWebsites = async () => {
 };
 
 const handleAdd = () => {
-    form.websiteName = '';
-    form.domain = '';
+    formRef.value?.resetFields();
     dialogVisible.value = true;
 };
 
 const handleSubmit = async () => {
-    if (!formRef.value) return;
-    await formRef.value.validate(async (valid: boolean) => {
-        if (valid) {
-            try {
-                await pubCreateSiteApi({ ...form });
-                ElMessage.success('添加成功');
-                dialogVisible.value = false;
-                fetchWebsites();
-            } catch (error) {
-                ElMessage.error(`添加失败：${(error as Error).message}`);
-            }
-        }
-    });
+    try {
+        await formRef.value?.validate();
+    } catch {
+        return;
+    }
+    try {
+        await pubCreateSiteApi(form);
+        ElMessage.success('添加成功');
+        dialogVisible.value = false;
+        fetchWebsites();
+    } catch (error) {
+        ElMessage.error(`添加失败：${(error as Error).message}`);
+    }
 };
 
-onMounted(() => {
-    fetchWebsites();
-});
+onMounted(fetchWebsites);
 </script>
 
 <template>

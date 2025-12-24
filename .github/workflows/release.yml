@@ -1,4 +1,4 @@
-name: Vite CI and Release
+name: Build and Release
 
 on:
   push:

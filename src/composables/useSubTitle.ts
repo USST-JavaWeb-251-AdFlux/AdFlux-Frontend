@@ -1,15 +1,16 @@
 const subTitle = ref<string | null>(null);
 
-export function useSubTitle(title?: MaybeRefOrGetter<string | undefined | null>) {
+export const useSubTitle = (title?: MaybeRefOrGetter<string | undefined | null>) => {
     if (title) {
-        watchEffect(() => {
+        const stop = watchEffect(() => {
             subTitle.value = toValue(title) ?? null;
+        });
+
+        onUnmounted(() => {
+            stop();
+            subTitle.value = null;
         });
     }
 
-    onUnmounted(() => {
-        subTitle.value = null;
-    });
-
     return subTitle;
-}
+};

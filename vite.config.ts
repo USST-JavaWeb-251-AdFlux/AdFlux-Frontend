@@ -41,6 +41,20 @@ export default defineConfig(({ mode }) => {
                 '@': fileURLToPath(new URL('./src', import.meta.url)),
             },
         },
+        build: {
+            chunkSizeWarningLimit: 512,
+            rollupOptions: {
+                output: {
+                    manualChunks(id) {
+                        if (id.includes('node_modules')) {
+                            if (id.includes('echarts')) {
+                                return 'echarts';
+                            }
+                        }
+                    },
+                },
+            },
+        },
         server: {
             host: '127.0.0.1',
             port: 5173,

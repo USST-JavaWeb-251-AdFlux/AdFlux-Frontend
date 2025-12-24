@@ -5,3 +5,7 @@
         ),
     )
 );
+
+@use 'element-plus/theme-chalk/src/message-box.scss' as *;
+@use 'element-plus/theme-chalk/src/message.scss' as *;
+@use 'element-plus/theme-chalk/src/notification.scss' as *;

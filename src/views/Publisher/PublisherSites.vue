@@ -79,6 +79,10 @@ const handleSubmit = async () => {
     }
 };
 
+const handleDetails = (row: WebsiteDetails) => {
+    router.push({ name: 'PublisherSiteDetail', params: { websiteId: row.websiteId } });
+};
+
 onMounted(fetchWebsites);
 </script>
 
@@ -106,18 +110,7 @@ onMounted(fetchWebsites);
             </ElTableColumn>
             <ElTableColumn label="操作" width="150">
                 <template #default="{ row }">
-                    <ElButton
-                        type="primary"
-                        link
-                        @click="
-                            router.push({
-                                name: 'PublisherWebsiteDetail',
-                                params: { websiteId: row.websiteId },
-                            })
-                        "
-                    >
-                        详情
-                    </ElButton>
+                    <ElButton type="primary" link @click="handleDetails(row)"> 详情 </ElButton>
                 </template>
             </ElTableColumn>
         </ElTable>

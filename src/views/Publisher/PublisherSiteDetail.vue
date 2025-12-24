@@ -52,7 +52,7 @@ const slotScript = `<adflux-slot></adflux-slot>`;
 
 const categoryScript = `<meta name="adflux-page-category" content="(分类名)" />`;
 
-onMounted(fetchWebsite);
+onMounted(() => watch(() => websiteId, fetchWebsite, { immediate: true }));
 </script>
 
 <template>
@@ -66,7 +66,6 @@ onMounted(fetchWebsite);
         </div>
 
         <div v-if="website" class="content-container">
-            <!-- 基本信息 -->
             <ElCard class="detail-card" shadow="never">
                 <template #header>
                     <div class="card-header">

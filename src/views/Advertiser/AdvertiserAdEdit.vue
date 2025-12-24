@@ -15,7 +15,7 @@ import { type AdCategory, listCategories } from '@/apis/commonApis';
 import { uploadFileApi } from '@/apis/fileApis';
 import { getFileFullPath } from '@/apis/request';
 
-const props = defineProps<{ adId?: string }>();
+const { adId } = defineProps<{ adId?: string }>();
 const router = useRouter();
 const formRef = useTemplateRef<FormInstance>('formRef');
 const loading = ref(true);
@@ -24,7 +24,7 @@ const categories = ref<AdCategory[]>([]);
 const uploadFile = ref<File>();
 const objectUrl = useObjectUrl(uploadFile);
 
-const isEdit = computed(() => !!props.adId);
+const isEdit = computed(() => !!adId);
 
 const formData = reactive<AdMeta>({
     title: '',
@@ -76,10 +76,10 @@ const fetchCategories = async () => {
 };
 
 const fetchAdDetails = async () => {
-    if (!props.adId) return;
+    if (!adId) return;
     loading.value = true;
     try {
-        const res = await advGetAdByIdApi(props.adId);
+        const res = await advGetAdByIdApi(adId);
         Object.assign(formData, res.data);
     } catch (error) {
         ElMessage.error(`获取详情失败：${(error as Error).message}`);
@@ -110,10 +110,10 @@ const handleSubmit = async (formEl: FormInstance | null) => {
             formData.adType = uploadRes.data.adType;
         }
 
-        if (isEdit.value && props.adId) {
-            await advUpdateAdApi(props.adId, formData);
+        if (isEdit.value && adId) {
+            await advUpdateAdApi(adId, formData);
             ElMessage.success('更新成功');
-            router.replace({ name: 'AdvertiserAdDetail', params: { adId: props.adId } });
+            router.replace({ name: 'AdvertiserAdDetail', params: { adId: adId } });
         } else {
             const result = await advCreateAdApi(formData);
             ElMessage.success('创建成功');
@@ -131,12 +131,19 @@ const handleCancel = () => {
 };
 
 onMounted(async () => {
-    const tasks = [fetchCategories()];
-    if (isEdit.value) {
-        tasks.push(fetchAdDetails());
-    }
-    await Promise.allSettled(tasks);
-    loading.value = false;
+    fetchCategories();
+
+    watch(
+        () => adId,
+        async (newAdId) => {
+            formRef.value?.resetFields();
+
+            if (newAdId) {
+                await fetchAdDetails();
+            }
+        },
+        { immediate: true },
+    );
 });
 </script>
 

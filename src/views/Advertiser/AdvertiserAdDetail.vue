@@ -35,7 +35,7 @@ type ECOption = echarts.ComposeOption<
     LineSeriesOption | TooltipComponentOption | GridComponentOption | LegendComponentOption
 >;
 
-const props = defineProps<{ adId: string }>();
+const { adId } = defineProps<{ adId: string }>();
 const router = useRouter();
 
 const loading = ref(true);
@@ -105,7 +105,7 @@ const getCategoryName = (id: string) => {
 const fetchAdDetails = async () => {
     loading.value = true;
     try {
-        const res = await advGetAdByIdApi(props.adId);
+        const res = await advGetAdByIdApi(adId);
         ad.value = res.data;
     } catch (error) {
         ElMessage.error(`获取详情失败：${(error as Error).message}`);
@@ -131,11 +131,9 @@ const fetchStats = async () => {
             };
         }
 
-        const res = await advGetAdStatsApi(props.adId, params);
+        const res = await advGetAdStatsApi(adId, params);
         stats.value = res.data;
-        nextTick(() => {
-            initChart();
-        });
+        nextTick(initChart);
     } catch (error) {
         ElMessage.error(`获取统计数据失败：${(error as Error).message}`);
     }
@@ -265,9 +263,18 @@ onMounted(() => {
         dateRange.value = shortcut.value();
     }
 
-    fetchAdDetails();
     fetchCategories();
-    fetchStats();
+
+    watch(
+        () => adId,
+        () => {
+            chartInstance?.dispose();
+            chartInstance = null;
+            fetchAdDetails();
+            fetchStats();
+        },
+        { immediate: true },
+    );
 });
 
 onUnmounted(() => {

@@ -42,12 +42,13 @@ const routes: RouteRecordRaw[] = [
         path: '/',
         name: 'Main',
         redirect: { name: 'Login' },
-        component: () => import('@/layouts/MainLayout.vue'),
+        component: () => import('@/layouts/RouterLayout.vue'),
         children: [
             {
                 path: '/admin',
                 name: 'Admin',
                 meta: { role: 'admin' },
+                component: () => import('@/layouts/MainLayout.vue'),
                 redirect: { name: 'AdminHome' },
                 children: [
                     {
@@ -80,6 +81,7 @@ const routes: RouteRecordRaw[] = [
                 path: '/advertiser',
                 name: 'Advertiser',
                 meta: { role: 'advertiser' },
+                component: () => import('@/layouts/MainLayout.vue'),
                 redirect: { name: 'AdvertiserHome' },
                 children: [
                     {
@@ -126,6 +128,7 @@ const routes: RouteRecordRaw[] = [
                 path: '/publisher',
                 name: 'Publisher',
                 meta: { role: 'publisher' },
+                component: () => import('@/layouts/MainLayout.vue'),
                 redirect: { name: 'PublisherHome' },
                 children: [
                     {

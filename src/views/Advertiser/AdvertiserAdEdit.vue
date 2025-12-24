@@ -11,6 +11,7 @@ import {
 import { type AdCategory, listCategories } from '@/apis/commonApis';
 import { uploadFileApi } from '@/apis/fileApis';
 import { getFileFullPath } from '@/apis/request';
+import { useSubTitle } from '@/composables/useSubTitle';
 
 const { adId } = defineProps<{ adId?: string }>();
 const router = useRouter();
@@ -32,6 +33,7 @@ const formData = reactive<AdMeta>({
     adLayout: AdLayout.banner.value,
     weeklyBudget: 0,
 });
+useSubTitle(() => formData.title);
 
 const rules = reactive<FormRules<AdMeta>>({
     title: [{ required: true, message: '请输入广告标题', trigger: 'blur' }],

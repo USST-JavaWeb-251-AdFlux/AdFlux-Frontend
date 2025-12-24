@@ -6,6 +6,7 @@ import {
     pubVerifySiteApi,
 } from '@/apis/publisherApis';
 import CodeBlock from '@/components/CodeBlock.vue';
+import { useSubTitle } from '@/composables/useSubTitle';
 import { formatDateTime } from '@/utils/tools';
 
 const router = useRouter();
@@ -13,6 +14,7 @@ const { websiteId } = defineProps<{ websiteId: string }>();
 
 const loading = ref(true);
 const website = ref<WebsiteDetails | null>(null);
+useSubTitle(() => website.value?.websiteName);
 
 const fetchWebsite = async () => {
     loading.value = true;

@@ -23,6 +23,7 @@ import {
 } from '@/apis/advApis';
 import { type AdCategory, listCategories } from '@/apis/commonApis';
 import { getFileFullPath } from '@/apis/request';
+import { useSubTitle } from '@/composables/useSubTitle';
 import { formatDateTime } from '@/utils/tools';
 
 echarts.use([LineChart, TooltipComponent, GridComponent, LegendComponent, CanvasRenderer]);
@@ -37,6 +38,7 @@ const router = useRouter();
 const loading = ref(true);
 const ad = ref<AdDetails>();
 const categories = ref<AdCategory[]>([]);
+useSubTitle(() => ad.value?.title);
 
 const stats = ref<{
     ctr: number;

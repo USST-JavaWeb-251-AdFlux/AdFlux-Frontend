@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import zhCn from 'element-plus/es/locale/lang/zh-cn';
+import { useSubTitle } from './composables/useSubTitle';
 
+const isDev = import.meta.env.DEV ? 'DEV' : '';
 const route = useRoute();
-const title = computed(() => {
-    const baseTitle = 'AdFlux';
-    const routeTitle = route.meta.title;
-    return routeTitle ? `${routeTitle} | ${baseTitle}` : baseTitle;
-});
-useTitle(title);
+const subTitle = useSubTitle();
+
+useTitle(() =>
+    [isDev, subTitle.value, route.meta.title, 'AdFlux'].filter((seg) => seg).join(' | '),
+);
 </script>
 
 <template>

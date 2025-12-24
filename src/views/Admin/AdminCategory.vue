@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue';
-import { ElMessage } from 'element-plus';
 import { createCategoryApi } from '@/apis/adminApis';
 import { type AdCategory, listCategories } from '@/apis/commonApis';
 import { formatDateTime } from '@/utils/tools';

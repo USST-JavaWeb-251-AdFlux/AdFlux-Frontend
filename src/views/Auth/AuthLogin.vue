@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
-import { ElMessage, type FormInstance, type FormRules } from 'element-plus';
+import type { FormInstance, FormRules } from 'element-plus';
 import { useAuthStore } from '@/stores/auth';
 
 const auth = useAuthStore();

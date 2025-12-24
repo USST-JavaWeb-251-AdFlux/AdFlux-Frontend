@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { ElMessage, ElMessageBox } from 'element-plus';
 import { advAddCompanyNameApi, advGetProfileApi, advGetStatOverviewApi } from '@/apis/advApis';
 
 const stats = ref<{

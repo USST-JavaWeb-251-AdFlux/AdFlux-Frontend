@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
-import { ElMessage, type FormInstance, type FormRules } from 'element-plus';
+import type { FormInstance, FormRules } from 'element-plus';
 import { authRegisterApi } from '@/apis/authApis';
 import { UserRole } from '@/apis/authApis';
 import type { ValueOf } from '@/utils/enum';

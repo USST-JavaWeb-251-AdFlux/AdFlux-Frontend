@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { useTitle } from '@vueuse/core';
 import zhCn from 'element-plus/es/locale/lang/zh-cn';
 
 const route = useRoute();

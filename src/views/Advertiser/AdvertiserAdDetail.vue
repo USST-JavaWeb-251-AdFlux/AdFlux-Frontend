@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { nextTick, onMounted, onUnmounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useResizeObserver } from '@vueuse/core';
 import { LineChart, type LineSeriesOption } from 'echarts/charts';
 import {
     GridComponent,
@@ -13,7 +10,6 @@ import {
 } from 'echarts/components';
 import * as echarts from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
-import { ElMessage, ElMessageBox } from 'element-plus';
 import {
     AdActive,
     type AdDetails,

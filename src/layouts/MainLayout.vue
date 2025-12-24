@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { ElMessage } from 'element-plus';
 import { UserRole } from '@/apis/authApis';
 import { useAuthStore } from '@/stores/auth';
 

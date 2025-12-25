@@ -51,7 +51,7 @@ jobs:
       - name: Auto Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: rel-${{ steps.vars.outputs.time }}-${{ steps.vars.outputs.hash }}
+          tag_name: rel-${{ steps.vars.outputs.hash }}
           name: Release-${{ steps.vars.outputs.time }}-${{ steps.vars.outputs.hash }}
           draft: false
           prerelease: false

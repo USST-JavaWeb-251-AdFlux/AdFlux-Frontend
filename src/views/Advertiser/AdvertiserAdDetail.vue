@@ -149,13 +149,16 @@ const initChart = () => {
     const dates = stats.value.daily.map((d) => d.date);
     const clicks = stats.value.daily.map((d) => d.clicks);
     const impressions = stats.value.daily.map((d) => d.impressions);
+    const ctrs = stats.value.daily.map((d) =>
+        d.impressions > 0 ? Number(((d.clicks / d.impressions) * 100).toFixed(2)) : 0,
+    );
 
     const option: ECOption = {
         tooltip: {
             trigger: 'axis',
         },
         legend: {
-            data: ['展示量', '点击量'],
+            data: ['展示量', '点击量', '点击率'],
         },
         grid: {
             left: '4%',
@@ -175,34 +178,56 @@ const initChart = () => {
         yAxis: [
             {
                 type: 'value',
-                name: '展示量',
+                name: '展示量 / 点击量',
                 position: 'left',
                 minInterval: 1,
             },
             {
                 type: 'value',
-                name: '点击量',
+                name: '点击率 (CTR)',
                 position: 'right',
-                minInterval: 1,
-                alignTicks: true,
+                min: 0,
+                max: 100,
+                axisLabel: {
+                    formatter: '{value}%',
+                },
             },
         ],
         series: [
+            {
+                name: '点击率',
+                type: 'line',
+                data: ctrs,
+                yAxisIndex: 1,
+                smooth: true,
+                showSymbol: false,
+                areaStyle: {
+                    color: '#FDD835',
+                    opacity: 0.2,
+                },
+                itemStyle: { color: '#FDD835' },
+                tooltip: {
+                    valueFormatter: (value) => value + '%',
+                },
+                z: 1,
+            },
             {
                 name: '展示量',
                 type: 'line',
                 data: impressions,
                 yAxisIndex: 0,
-                smooth: true,
+                smooth: false,
                 itemStyle: { color: '#F44336' },
+                z: 2,
             },
             {
                 name: '点击量',
                 type: 'line',
                 data: clicks,
-                yAxisIndex: 1,
-                smooth: true,
+                yAxisIndex: 0,
+                smooth: false,
                 itemStyle: { color: '#2196F3' },
+                z: 3,
             },
         ],
     };
@@ -522,6 +547,10 @@ onUnmounted(() => {
                     margin-right: 10px;
                     font-size: 14px;
                     color: var(--el-text-color-regular);
+                }
+
+                .el-date-editor {
+                    max-width: 320px;
                 }
             }
 

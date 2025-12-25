@@ -4,6 +4,7 @@ import {
     AdLayout,
     type AdMeta,
     AdType,
+    ReviewStatus,
     advCreateAdApi,
     advGetAdByIdApi,
     advUpdateAdApi,
@@ -23,6 +24,7 @@ const uploadFile = ref<File>();
 const objectUrl = useObjectUrl(uploadFile);
 
 const isEdit = computed(() => !!adId);
+const isReviewPassed = ref(false);
 
 const formData = reactive<AdMeta>({
     title: '',
@@ -80,6 +82,7 @@ const fetchAdDetails = async () => {
     try {
         const res = await advGetAdByIdApi(adId);
         Object.assign(formData, res.data);
+        isReviewPassed.value = res.data.reviewStatus === ReviewStatus.approved.value;
     } catch (error) {
         ElMessage.error(`获取详情失败：${(error as Error).message}`);
     } finally {
@@ -136,6 +139,7 @@ onMounted(async () => {
         () => adId,
         async (newAdId) => {
             formRef.value?.resetFields();
+            isReviewPassed.value = false;
 
             if (newAdId) {
                 await fetchAdDetails();
@@ -167,6 +171,12 @@ onMounted(async () => {
                 label-width="120px"
                 class="edit-form"
             >
+                <ElAlert
+                    v-if="isEdit && isReviewPassed"
+                    title="注意：广告修改后需重新审核。"
+                    type="warning"
+                    show-icon
+                />
                 <ElFormItem label="标题" prop="title">
                     <ElInput v-model="formData.title" placeholder="请输入广告标题" />
                 </ElFormItem>
@@ -277,6 +287,10 @@ onMounted(async () => {
 
         .edit-form {
             max-width: 600px;
+
+            .el-alert {
+                margin: 0 0 24px 40px;
+            }
         }
 
         .media-uploader {

@@ -13,6 +13,8 @@ const rules = reactive<FormRules<typeof form>>({
 
 const loading = ref(false);
 const onSubmit = async () => {
+    if (loading.value) return;
+
     try {
         await formRef.value?.validate();
     } catch {
@@ -50,7 +52,7 @@ const navigateToRegister = () => router.push({ name: 'Register' });
             :disabled="loading"
             v-loading="loading"
             element-loading-background="rgba(0, 0, 0, 0)"
-            @submit.prevent="onSubmit"
+            @keyup.enter="onSubmit"
         >
             <ElFormItem label="用户名" prop="username">
                 <ElInput v-model.trim="form.username" placeholder="用户名" />

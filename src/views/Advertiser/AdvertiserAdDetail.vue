@@ -36,6 +36,7 @@ const { adId } = defineProps<{ adId: string }>();
 const router = useRouter();
 
 const loading = ref(true);
+const statLoading = ref(true);
 const ad = ref<AdDetails>();
 const categories = ref<AdCategory[]>([]);
 useSubTitle(() => ad.value?.title);
@@ -46,7 +47,7 @@ const stats = ref<{
     totalImpressions: number;
     daily: { clicks: number; date: string; impressions: number }[];
 }>();
-const chartRef = ref<HTMLElement>();
+const chartRef = useTemplateRef('chartRef');
 let chartInstance: echarts.ECharts | null = null;
 
 useResizeObserver(chartRef, () => {
@@ -120,6 +121,7 @@ const formatDateForApi = (d: Date) => {
 };
 
 const fetchStats = async () => {
+    statLoading.value = true;
     try {
         let params = {};
         if (dateRange.value && dateRange.value.length === 2) {
@@ -134,6 +136,8 @@ const fetchStats = async () => {
         nextTick(initChart);
     } catch (error) {
         ElMessage.error(`获取统计数据失败：${(error as Error).message}`);
+    } finally {
+        statLoading.value = false;
     }
 };
 
@@ -405,7 +409,7 @@ onUnmounted(() => {
                 </div>
             </div>
 
-            <div class="stats-section" v-if="stats">
+            <div class="stats-section" v-loading="!loading && statLoading">
                 <div class="section-title">数据统计</div>
                 <div class="filter-container">
                     <span class="label">展示周期：</span>
@@ -420,7 +424,7 @@ onUnmounted(() => {
                         @change="fetchStats"
                     />
                 </div>
-                <div class="stats-summary">
+                <div class="stats-summary" v-if="stats">
                     <ElCard shadow="hover" class="stat-item">
                         <template #header>总展示量</template>
                         <div class="stat-value">{{ stats.totalImpressions }}</div>
@@ -549,8 +553,8 @@ onUnmounted(() => {
                     color: var(--el-text-color-regular);
                 }
 
-                .el-date-editor {
-                    max-width: 320px;
+                :deep(.el-date-editor) {
+                    flex-grow: 0;
                 }
             }
 

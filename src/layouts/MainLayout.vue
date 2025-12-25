@@ -14,9 +14,6 @@ const logout = () => {
 const handleCommand = (command: string) => {
     if (command === 'logout') {
         logout();
-    } else if (command === 'profile') {
-        // TODO
-        ElMessage.info('修改信息功能待开发');
     }
 };
 
@@ -64,7 +61,7 @@ const activeMenu = computed(() => route.path);
                 </template>
             </ElMenu>
 
-            <div class="user-info">
+            <div class="user-info" v-if="authStore.role">
                 <ElDropdown @command="handleCommand">
                     <span class="el-dropdown-link">
                         {{ UserRole(authStore.role).label }} - {{ authStore.username }}
@@ -74,7 +71,6 @@ const activeMenu = computed(() => route.path);
                     </span>
                     <template #dropdown>
                         <ElDropdownMenu>
-                            <ElDropdownItem command="profile">修改信息</ElDropdownItem>
                             <ElDropdownItem command="logout">退出登录</ElDropdownItem>
                         </ElDropdownMenu>
                     </template>

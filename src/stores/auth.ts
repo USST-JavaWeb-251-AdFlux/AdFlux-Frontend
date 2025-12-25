@@ -1,15 +1,16 @@
 import { StorageSerializers } from '@vueuse/core';
-import { authLoginApi } from '@/apis/authApis';
+import { UserRole, authLoginApi } from '@/apis/authApis';
+import type { ValueOf } from '@/utils/enum';
 import { capitalize } from '@/utils/tools';
 
 export const useAuthStore = defineStore('auth', () => {
     const router = useRouter();
 
-    const token = useLocalStorage<string>('auth_token', null);
+    const token = useLocalStorage<string | null>('auth_token', null);
     const userInfo = useLocalStorage<{
         username: string;
-        userRole: 'advertiser' | 'publisher' | 'admin';
-    }>('user_info', null, { serializer: StorageSerializers.object });
+        userRole: ValueOf<typeof UserRole>;
+    } | null>('user_info', null, { serializer: StorageSerializers.object });
 
     const login = async (body: { username: string; userPassword: string }) => {
         const { data } = await authLoginApi(body);

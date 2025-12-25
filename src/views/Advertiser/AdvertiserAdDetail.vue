@@ -553,7 +553,7 @@ onUnmounted(() => {
                     color: var(--el-text-color-regular);
                 }
 
-                ::v-deep(.el-date-editor) {
+                :deep(.el-date-editor) {
                     flex-grow: 0;
                 }
             }

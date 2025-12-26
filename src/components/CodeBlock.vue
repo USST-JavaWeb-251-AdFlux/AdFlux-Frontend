@@ -54,7 +54,7 @@ watch(
             v-if="tokens.length"
             class="code-content"
         ><code><div v-for="(line, i) in tokens" :key="i" class="line"><span v-for="(token, j) in line" :key="j" :style="{ color: token.color }">{{ token.content }}</span></div></code></pre>
-        <code v-else class="code-content">{{ code }}</code>
+        <pre v-else class="code-content"><code>{{ code }}</code></pre>
         <ElButton type="primary" size="small" link @click="handleCopy">复制代码</ElButton>
     </div>
 </template>
@@ -68,7 +68,6 @@ watch(
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
     border: 1px solid #e4e7ed;
 
     .code-content {
@@ -76,9 +75,10 @@ watch(
         margin-right: 16px;
         overflow-x: auto;
 
-        pre {
-            background-color: transparent;
-            font-family: inherit;
+        code {
+            font-size: 14px;
+            line-height: 16px;
+            font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
         }
     }
 

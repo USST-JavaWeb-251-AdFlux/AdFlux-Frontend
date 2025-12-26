@@ -1,12 +1,18 @@
 <script setup lang="ts">
-import { type Highlighter, createHighlighter } from 'shiki';
+import {
+    type BundledLanguage,
+    type Highlighter,
+    type SpecialLanguage,
+    type ThemedToken,
+    createHighlighter,
+} from 'shiki';
 
 const { code, lang = 'javascript' } = defineProps<{
     code: string;
-    lang?: string;
+    lang?: BundledLanguage | SpecialLanguage;
 }>();
 
-const highlightedHtml = ref<string | null>(null);
+const tokens = ref<ThemedToken[][]>([]);
 let highlighter: Highlighter | null = null;
 
 const updateHighlight = async () => {
@@ -16,10 +22,8 @@ const updateHighlight = async () => {
             langs: ['javascript', 'typescript', 'html', 'css', 'json', 'bash'],
         });
     }
-    highlightedHtml.value = highlighter.codeToHtml(code, {
-        lang,
-        theme: 'github-light',
-    });
+    const result = highlighter.codeToTokens(code, { lang, theme: 'github-light' });
+    tokens.value = result.tokens;
 };
 
 const handleCopy = async () => {
@@ -32,15 +36,26 @@ const handleCopy = async () => {
 };
 
 onMounted(updateHighlight);
+onUnmounted(() => highlighter?.dispose());
 
-watch(() => [code, lang], updateHighlight);
+watch(
+    () => [code, lang],
+    async () => {
+        tokens.value.length = 0;
+        await nextTick();
+        updateHighlight();
+    },
+);
 </script>
 
 <template>
     <div class="code-block">
-        <div v-if="highlightedHtml" class="code-content" v-html="highlightedHtml"></div>
+        <pre
+            v-if="tokens.length"
+            class="code-content"
+        ><code><div v-for="(line, i) in tokens" :key="i" class="line"><span v-for="(token, j) in line" :key="j" :style="{ color: token.color }">{{ token.content }}</span></div></code></pre>
         <code v-else class="code-content">{{ code }}</code>
-        <ElButton type="primary" link @click="handleCopy">复制代码</ElButton>
+        <ElButton type="primary" size="small" link @click="handleCopy">复制代码</ElButton>
     </div>
 </template>
 
@@ -61,16 +76,15 @@ watch(() => [code, lang], updateHighlight);
         margin-right: 16px;
         overflow-x: auto;
 
-        :deep(pre) {
-            margin: 0;
-            padding: 0 !important;
-            background-color: transparent !important;
+        pre {
+            background-color: transparent;
             font-family: inherit;
         }
     }
 
     .el-button {
         flex-shrink: 0;
+        border: none;
     }
 }
 </style>

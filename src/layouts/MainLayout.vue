@@ -1,10 +1,17 @@
 <script setup lang="ts">
+import { getBackendVersion, getTrackerVersion } from '@/apis/appApis';
 import { UserRole } from '@/apis/authApis';
 import { useAuthStore } from '@/stores/auth';
 
 const router = useRouter();
 const route = useRoute();
 const authStore = useAuthStore();
+
+const versions = reactive({
+    frontend: import.meta.env.DEV ? '[Dev]' : (import.meta.env.VITE_APP_VERSION ?? '[Unknown]'),
+    backend: '[Loading]',
+    tracker: '[Loading]',
+});
 
 const logout = () => {
     authStore.logout();
@@ -37,6 +44,11 @@ const menuRoutes = computed(() => {
 });
 
 const activeMenu = computed(() => route.path);
+
+onMounted(() => {
+    getTrackerVersion().then((version) => (versions.tracker = version));
+    getBackendVersion().then((res) => (versions.backend = res.data));
+});
 </script>
 
 <template>
@@ -87,6 +99,13 @@ const activeMenu = computed(() => route.path);
                 </Transition>
             </RouterView>
         </ElMain>
+
+        <ElFooter class="footer">
+            <div>
+                © {{ new Date().getFullYear() }} AdFlux · FE {{ versions.frontend }} · BE
+                {{ versions.backend }} · TR {{ versions.tracker }}
+            </div>
+        </ElFooter>
     </ElContainer>
 </template>
 
@@ -146,6 +165,16 @@ const activeMenu = computed(() => route.path);
         .fade-leave-to {
             opacity: 0;
         }
+    }
+
+    .footer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--el-text-color-secondary);
+        background-color: var(--el-fill-color);
+        font-size: 14px;
+        user-select: none;
     }
 }
 </style>

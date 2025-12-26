@@ -7,6 +7,8 @@ import { type UserConfig, defineConfig, loadEnv } from 'vite';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
+    const env = loadEnv(mode, process.cwd());
+
     const config: UserConfig = {
         plugins: [
             vue(),
@@ -46,7 +48,7 @@ export default defineConfig(({ mode }) => {
             },
         },
         build: {
-            chunkSizeWarningLimit: 512,
+            chunkSizeWarningLimit: 1024,
             rollupOptions: {
                 output: {
                     manualChunks(id) {
@@ -63,18 +65,26 @@ export default defineConfig(({ mode }) => {
             host: '127.0.0.1',
             port: 5173,
             strictPort: true,
+            proxy: {},
         },
     };
 
     try {
-        const env = loadEnv(mode, process.cwd());
         const apiHost = new URL(env.VITE_API_HOST);
-        if (config.server) {
-            config.server.proxy = {
-                [apiHost.pathname]: {
-                    target: apiHost.origin,
-                    changeOrigin: true,
-                },
+        if (config.server?.proxy) {
+            config.server.proxy[apiHost.pathname] = {
+                target: apiHost.origin,
+                changeOrigin: true,
+            };
+        }
+    } catch {}
+
+    try {
+        const trackerHost = new URL(env.VITE_ADS_HOST);
+        if (config.server?.proxy) {
+            config.server.proxy[trackerHost.pathname] = {
+                target: trackerHost.origin,
+                changeOrigin: true,
             };
         }
     } catch {}

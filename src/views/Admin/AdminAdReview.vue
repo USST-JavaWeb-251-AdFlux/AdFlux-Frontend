@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { listAllAdsApi, reviewAdApi } from '@/apis/adminApis';
 import { AdActive, type AdDetails, AdType, ReviewStatus } from '@/apis/advApis';
-import { getFileFullPath } from '@/apis/request';
+import { getBackendFullPath } from '@/apis/request';
 import type { ValueOf } from '@/utils/enum';
 
 const loading = ref(false);
@@ -121,7 +121,7 @@ onMounted(fetchAds);
                             <div class="ad-media">
                                 <ElImage
                                     v-if="ad.adType === AdType.image.value"
-                                    :src="getFileFullPath(ad.mediaUrl)"
+                                    :src="getBackendFullPath(ad.mediaUrl)"
                                     fit="cover"
                                     class="media-preview"
                                 >
@@ -133,7 +133,7 @@ onMounted(fetchAds);
                                 </ElImage>
                                 <video
                                     v-else-if="ad.adType === AdType.video.value"
-                                    :src="getFileFullPath(ad.mediaUrl)"
+                                    :src="getBackendFullPath(ad.mediaUrl)"
                                     class="media-preview"
                                     controls
                                 ></video>

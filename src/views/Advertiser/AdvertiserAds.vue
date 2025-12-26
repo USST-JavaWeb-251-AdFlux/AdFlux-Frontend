@@ -8,7 +8,7 @@ import {
     advListAdsApi,
     advToggleAdStatusApi,
 } from '@/apis/advApis';
-import { getFileFullPath } from '@/apis/request';
+import { getBackendFullPath } from '@/apis/request';
 import router from '@/router';
 import { type ValueOf } from '@/utils/enum';
 
@@ -170,7 +170,7 @@ onMounted(fetchAds);
                             <div class="ad-media">
                                 <ElImage
                                     v-if="ad.adType === AdType.image.value"
-                                    :src="getFileFullPath(ad.mediaUrl)"
+                                    :src="getBackendFullPath(ad.mediaUrl)"
                                     fit="cover"
                                     class="media-preview"
                                 >

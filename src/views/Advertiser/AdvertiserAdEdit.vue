@@ -11,7 +11,7 @@ import {
 } from '@/apis/advApis';
 import { type AdCategory, listCategories } from '@/apis/commonApis';
 import { uploadFileApi } from '@/apis/fileApis';
-import { getFileFullPath } from '@/apis/request';
+import { getBackendFullPath } from '@/apis/request';
 import { useSubTitle } from '@/composables/useSubTitle';
 
 const { adId } = defineProps<{ adId?: string }>();
@@ -206,7 +206,7 @@ onMounted(async () => {
                                 :src="
                                     formData.mediaUrl.startsWith('blob:')
                                         ? formData.mediaUrl
-                                        : getFileFullPath(formData.mediaUrl)
+                                        : getBackendFullPath(formData.mediaUrl)
                                 "
                                 class="media-preview"
                             />
@@ -215,7 +215,7 @@ onMounted(async () => {
                                 :src="
                                     formData.mediaUrl.startsWith('blob:')
                                         ? formData.mediaUrl
-                                        : getFileFullPath(formData.mediaUrl)
+                                        : getBackendFullPath(formData.mediaUrl)
                                 "
                                 class="media-preview"
                                 controls

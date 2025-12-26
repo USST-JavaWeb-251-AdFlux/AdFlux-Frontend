@@ -44,7 +44,7 @@ jobs:
         run: |
           export TZ='Asia/Shanghai'
           echo "hash=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
-          echo "time=$(git log -1 --format=%cd --date=format:%Y.%m.%d.%H%M)" >> $GITHUB_OUTPUT
+          echo "time=$(git log -1 --format=%cd --date=format-local:%Y.%m.%d.%H%M)" >> $GITHUB_OUTPUT
 
       - name: Compress build output
         run: cd dist && zip -r ../dist-${{ steps.vars.outputs.hash }}.zip .

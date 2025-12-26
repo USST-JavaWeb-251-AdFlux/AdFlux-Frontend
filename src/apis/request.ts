@@ -1,9 +1,13 @@
 import { useAuthStore } from '@/stores/auth';
 import type { ApiResponse } from './types';
 
-const rawHost = import.meta.env.VITE_API_HOST;
 const isDev = import.meta.env.DEV;
-const apiHost = isDev ? new URL(rawHost).pathname : rawHost;
+
+const rawApiHost = import.meta.env.VITE_API_HOST;
+const apiHost = isDev ? new URL(rawApiHost).pathname : rawApiHost;
+
+const rawTrackerHost = import.meta.env.VITE_ADS_HOST;
+const trackerHost = isDev ? new URL(rawTrackerHost).pathname : rawTrackerHost;
 
 type RequestOptions = Omit<RequestInit, 'headers' | 'body'> & {
     headers?: Record<string, string>;
@@ -58,6 +62,10 @@ export async function request<T extends ApiResponse>(
     return result;
 }
 
-export const getFileFullPath = (filePath: string) => {
-    return filePath ? `${apiHost}${filePath}` : '';
+export const getBackendFullPath = (path: string) => {
+    return path ? `${apiHost}${path}` : '';
+};
+
+export const getTrackerFullPath = (path: string) => {
+    return path ? `${trackerHost}${path}` : '';
 };

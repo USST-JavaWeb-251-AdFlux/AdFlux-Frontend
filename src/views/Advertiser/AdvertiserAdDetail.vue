@@ -22,7 +22,7 @@ import {
     advToggleAdStatusApi,
 } from '@/apis/advApis';
 import { type AdCategory, listCategories } from '@/apis/commonApis';
-import { getFileFullPath } from '@/apis/request';
+import { getBackendFullPath } from '@/apis/request';
 import { useSubTitle } from '@/composables/useSubTitle';
 import { formatDateTime } from '@/utils/tools';
 
@@ -349,7 +349,7 @@ onUnmounted(() => {
                     <div class="media-container">
                         <ElImage
                             v-if="ad.adType === AdType.image.value"
-                            :src="getFileFullPath(ad.mediaUrl)"
+                            :src="getBackendFullPath(ad.mediaUrl)"
                             fit="contain"
                             class="media-preview"
                         >
@@ -361,7 +361,7 @@ onUnmounted(() => {
                         </ElImage>
                         <video
                             v-else-if="ad.adType === AdType.video.value"
-                            :src="getFileFullPath(ad.mediaUrl)"
+                            :src="getBackendFullPath(ad.mediaUrl)"
                             class="media-preview"
                             controls
                         ></video>

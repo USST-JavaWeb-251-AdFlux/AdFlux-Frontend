@@ -53,7 +53,7 @@ watch(() => [code, lang], updateHighlight);
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    font-family: 'Fira Code', monospace;
+    font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
     border: 1px solid #e4e7ed;
 
     .code-content {

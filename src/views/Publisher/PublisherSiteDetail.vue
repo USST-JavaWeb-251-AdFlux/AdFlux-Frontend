@@ -107,7 +107,7 @@ onMounted(() => watch(() => websiteId, fetchWebsite, { immediate: true }));
                         <p>
                             请将以下 Meta 标签添加到您网站首页的 <code>&lt;head&gt;</code> 标签中：
                         </p>
-                        <CodeBlock :code="metaTag" />
+                        <CodeBlock :code="metaTag" lang="html" />
                     </div>
                     <div class="step">
                         <h4>第二步：点击验证</h4>
@@ -135,18 +135,19 @@ onMounted(() => watch(() => websiteId, fetchWebsite, { immediate: true }));
                         <p>
                             请将以下脚本代码添加到您网站的 <code>&lt;body&gt;</code> 结束标签之前：
                         </p>
-                        <CodeBlock :code="adScript" />
+                        <CodeBlock :code="adScript" lang="html" />
                     </div>
                     <div class="step">
                         <h4>第二步：添加广告栏位</h4>
                         <p>在每个广告展示的位置添加相应的广告栏位代码：</p>
-                        <CodeBlock :code="slotScript" />
+                        <CodeBlock :code="slotScript" lang="html" />
                         <p>
                             提示：如果您使用 Vue，请在
                             <code>compilerOptions</code> 中注册广告栏位组件：
                         </p>
                         <CodeBlock
                             code="compilerOptions: { isCustomElement: (tag) => (tag === 'adflux-slot') }"
+                            lang="javascript"
                         />
                         <p>
                             提示：您可以使用 <code>style</code> 或
@@ -159,7 +160,7 @@ onMounted(() => watch(() => websiteId, fetchWebsite, { immediate: true }));
                             如果想要更加精准投放广告，可以在每个页面的
                             <code>&lt;head&gt;</code> 标签中，添加内容分类标识：
                         </p>
-                        <CodeBlock :code="categoryScript" />
+                        <CodeBlock :code="categoryScript" lang="html" />
                     </div>
                 </div>
             </ElCard>

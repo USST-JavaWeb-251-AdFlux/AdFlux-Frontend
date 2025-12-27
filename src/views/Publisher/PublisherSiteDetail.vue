@@ -169,7 +169,7 @@ onMounted(() => {
                         <p>
                             提示：将 (分类名)
                             替换为该页面的实际内容分类名称，目前可选的分类名称包括：{{
-                                categories.length ? categories.join('、') : '(暂无)'
+                                categories.length ? categories.join('、') : '暂无可用分类'
                             }}。
                         </p>
                     </div>

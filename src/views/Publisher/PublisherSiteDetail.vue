@@ -53,9 +53,15 @@ const slotScript = `<adflux-slot></adflux-slot>`;
 
 const categoryScript = `<meta name="adflux-page-category" content="(分类名)" />`;
 
-onMounted(() => {
-    listCategoriesApi().then((res) => (categories.value = res.data.map((cat) => cat.categoryName)));
+onMounted(async () => {
     watch(() => websiteId, fetchWebsite, { immediate: true });
+
+    try {
+        const result = await listCategoriesApi();
+        categories.value = result.data.map((cat) => cat.categoryName);
+    } catch (error) {
+        ElMessage.error(`获取分类列表失败：${(error as Error).message}`);
+    }
 });
 </script>
 

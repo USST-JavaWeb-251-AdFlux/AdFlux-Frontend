@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { listCategoriesApi } from '@/apis/commonApis';
 import {
     type WebsiteDetails,
     WebsiteVerification,
@@ -15,6 +16,7 @@ const { websiteId } = defineProps<{ websiteId: string }>();
 const loading = ref(true);
 const website = ref<WebsiteDetails | null>(null);
 useSubTitle(() => website.value?.websiteName);
+const categories = ref<string[]>([]);
 
 const fetchWebsite = async () => {
     loading.value = true;
@@ -51,7 +53,16 @@ const slotScript = `<adflux-slot></adflux-slot>`;
 
 const categoryScript = `<meta name="adflux-page-category" content="(分类名)" />`;
 
-onMounted(() => watch(() => websiteId, fetchWebsite, { immediate: true }));
+onMounted(async () => {
+    watch(() => websiteId, fetchWebsite, { immediate: true });
+
+    try {
+        const result = await listCategoriesApi();
+        categories.value = result.data.map((cat) => cat.categoryName);
+    } catch (error) {
+        ElMessage.error(`获取分类列表失败：${(error as Error).message}`);
+    }
+});
 </script>
 
 <template>
@@ -161,6 +172,12 @@ onMounted(() => watch(() => websiteId, fetchWebsite, { immediate: true }));
                             <code>&lt;head&gt;</code> 标签中，添加内容分类标识：
                         </p>
                         <CodeBlock :code="categoryScript" lang="html" />
+                        <p>
+                            提示：将 (分类名)
+                            替换为该页面的实际内容分类名称，目前可选的分类名称包括：{{
+                                categories.length ? categories.join('、') : '暂无可用分类'
+                            }}。
+                        </p>
                     </div>
                 </div>
             </ElCard>

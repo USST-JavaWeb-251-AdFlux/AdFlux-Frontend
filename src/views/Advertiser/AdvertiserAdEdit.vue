@@ -9,7 +9,7 @@ import {
     advGetAdByIdApi,
     advUpdateAdApi,
 } from '@/apis/advApis';
-import { type AdCategory, listCategories } from '@/apis/commonApis';
+import { type AdCategory, listCategoriesApi } from '@/apis/commonApis';
 import { uploadFileApi } from '@/apis/fileApis';
 import { getBackendFullPath } from '@/apis/request';
 import { useSubTitle } from '@/composables/useSubTitle';
@@ -72,7 +72,7 @@ watch(objectUrl, (url) => {
 });
 
 const fetchCategories = async () => {
-    const res = await listCategories();
+    const res = await listCategoriesApi();
     categories.value = res.data;
 };
 

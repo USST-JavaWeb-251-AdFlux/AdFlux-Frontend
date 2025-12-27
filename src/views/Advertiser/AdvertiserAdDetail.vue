@@ -21,7 +21,7 @@ import {
     advGetAdStatsApi,
     advToggleAdStatusApi,
 } from '@/apis/advApis';
-import { type AdCategory, listCategories } from '@/apis/commonApis';
+import { type AdCategory, listCategoriesApi } from '@/apis/commonApis';
 import { getBackendFullPath } from '@/apis/request';
 import { useSubTitle } from '@/composables/useSubTitle';
 import { formatDateTime } from '@/utils/tools';
@@ -89,7 +89,7 @@ const shortcuts: { text: string; value: () => [Date, Date] }[] = [
 
 const fetchCategories = async () => {
     try {
-        const res = await listCategories();
+        const res = await listCategoriesApi();
         categories.value = res.data;
     } catch (error) {
         ElMessage.error(`获取分类失败：${(error as Error).message}`);

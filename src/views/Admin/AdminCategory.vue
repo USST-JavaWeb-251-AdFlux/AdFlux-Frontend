@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { createCategoryApi } from '@/apis/adminApis';
-import { type AdCategory, listCategories } from '@/apis/commonApis';
+import { type AdCategory, listCategoriesApi } from '@/apis/commonApis';
 import { formatDateTime } from '@/utils/tools';
 
 const loading = ref(false);
@@ -13,7 +13,7 @@ const form = reactive({
 const fetchCategories = async () => {
     loading.value = true;
     try {
-        const res = await listCategories();
+        const res = await listCategoriesApi();
         categories.value = res.data;
     } catch (error) {
         ElMessage.error(`获取分类列表失败：${(error as Error).message}`);

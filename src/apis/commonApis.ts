@@ -7,6 +7,6 @@ export type AdCategory = {
     createTime: string;
 };
 
-export const listCategories = () => {
+export const listCategoriesApi = () => {
     return request<ApiResponse<AdCategory[]>>('/common/categories', { method: 'GET' });
 };

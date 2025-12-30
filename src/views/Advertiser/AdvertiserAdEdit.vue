@@ -195,13 +195,16 @@ onMounted(async () => {
                         v-model="formData.adLayout"
                         :disabled="formData.adLayout === AdLayout.video.value"
                     >
-                        <ElOption
-                            v-for="opt in AdLayout()"
-                            :key="opt.value"
-                            :label="opt.label"
-                            :value="opt.value"
-                            :hidden="opt.value === AdLayout.video.value"
-                        />
+                        <template v-for="opt in AdLayout()" :key="opt.value">
+                            <ElOption
+                                v-if="
+                                    (formData.adType === AdType.video.value) ===
+                                    (opt.value === AdLayout.video.value)
+                                "
+                                :label="opt.label"
+                                :value="opt.value"
+                            />
+                        </template>
                     </ElSelect>
                 </ElFormItem>
                 <ElFormItem label="媒体文件" prop="mediaUrl">

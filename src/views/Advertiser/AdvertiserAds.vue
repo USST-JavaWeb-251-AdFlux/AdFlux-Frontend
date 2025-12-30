@@ -2,6 +2,7 @@
 import {
     AdActive,
     type AdDetails,
+    AdLayout,
     AdType,
     ReviewStatus,
     advDeleteAdApi,
@@ -213,10 +214,10 @@ onMounted(fetchAds);
                                         <span class="label">类型：</span>
                                         <span>{{ AdType(ad.adType).label }}</span>
                                     </div>
-                                    <!-- <div class="detail-item">
+                                    <div class="detail-item">
                                         <span class="label">布局：</span>
                                         <span>{{ AdLayout(ad.adLayout).label }}</span>
-                                    </div> -->
+                                    </div>
                                     <div class="detail-item">
                                         <span class="label">预算：</span>
                                         <span>¥{{ ad.weeklyBudget.toFixed(2) }} / 周</span>

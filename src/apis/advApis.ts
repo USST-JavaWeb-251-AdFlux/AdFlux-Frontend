@@ -8,9 +8,9 @@ export const AdType = createEnum({
 } as const);
 
 export const AdLayout = createEnum({
-    banner: { value: 0, label: '横幅' },
-    sidebar: { value: 1, label: '侧边栏' },
-    card: { value: 2, label: '卡片' },
+    video: { value: 0, label: '视频' },
+    banner: { value: 1, label: '横幅' },
+    sidebar: { value: 2, label: '侧栏' },
 } as const);
 
 export const AdActive = createEnum({

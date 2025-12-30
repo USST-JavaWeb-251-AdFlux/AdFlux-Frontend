@@ -93,6 +93,16 @@ const fetchAdDetails = async () => {
 const handleFileChange = ({ raw }: UploadFile) => {
     if (raw) {
         uploadFile.value = raw;
+        if (raw.type.startsWith('image/')) {
+            formData.adType = AdType.image.value;
+            formData.adLayout = AdLayout.banner.value;
+        } else if (raw.type.startsWith('video/')) {
+            formData.adType = AdType.video.value;
+            formData.adLayout = AdLayout.video.value;
+        } else {
+            ElMessage.error('仅支持上传图片或视频文件');
+            uploadFile.value = undefined;
+        }
     }
 };
 
@@ -181,12 +191,16 @@ onMounted(async () => {
                     <ElInput v-model="formData.title" placeholder="请输入广告标题" />
                 </ElFormItem>
                 <ElFormItem label="布局" prop="adLayout">
-                    <ElSelect v-model="formData.adLayout">
+                    <ElSelect
+                        v-model="formData.adLayout"
+                        :disabled="formData.adLayout === AdLayout.video.value"
+                    >
                         <ElOption
                             v-for="opt in AdLayout()"
                             :key="opt.value"
                             :label="opt.label"
                             :value="opt.value"
+                            :hidden="opt.value === AdLayout.video.value"
                         />
                     </ElSelect>
                 </ElFormItem>

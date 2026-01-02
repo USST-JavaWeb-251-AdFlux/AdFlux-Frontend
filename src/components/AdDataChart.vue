@@ -219,7 +219,7 @@ onUnmounted(() => {
                 <div class="stat-value">{{ (stats.ctr * 100).toFixed(2) }}%</div>
             </ElCard>
         </div>
-        <div class="chart-container" ref="chartRef"></div>
+        <div class="chart-container" v-show="stats?.daily" ref="chartRef"></div>
     </div>
 </template>
 

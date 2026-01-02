@@ -77,7 +77,7 @@ export type AdStats = {
     ctr: number;
     totalClicks: number;
     totalImpressions: number;
-    daily: { clicks: number; date: string; impressions: number }[];
+    daily?: { clicks: number; date: string; impressions: number }[];
 };
 
 export const advGetAdStatsApi = (

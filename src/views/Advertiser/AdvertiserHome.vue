@@ -82,7 +82,7 @@ onMounted(() => {
             </ElButton>
         </div>
 
-        <AdDataChart :loading="loading" :stats="stats" @date-change="handleDateChange" />
+        <AdDataChart :loading="loading" :stats="stats" @dateChange="handleDateChange" />
     </div>
 </template>
 

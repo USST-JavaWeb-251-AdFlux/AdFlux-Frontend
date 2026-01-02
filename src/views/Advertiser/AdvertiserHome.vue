@@ -1,23 +1,38 @@
 <script setup lang="ts">
-import { advAddCompanyNameApi, advGetProfileApi, advGetStatOverviewApi } from '@/apis/advApis';
+import {
+    type AdStats,
+    advAddCompanyNameApi,
+    advGetProfileApi,
+    advGetStatOverviewApi,
+} from '@/apis/advApis';
+import AdDataChart from '@/components/AdDataChart.vue';
+import { formatDateForApi } from '@/utils/tools';
 
-const stats = ref<{
-    ctr: number;
-    totalClicks: number;
-    totalImpressions: number;
-    totalSpend: number;
-}>();
+const stats = ref<AdStats>();
 
 const companyName = ref('');
 const loading = ref(false);
+const currentDateRange = ref<[Date, Date]>();
 
 const fetchStats = async () => {
     try {
-        const res = await advGetStatOverviewApi();
+        let params = {};
+        if (currentDateRange.value && currentDateRange.value.length === 2) {
+            params = {
+                startDate: formatDateForApi(currentDateRange.value[0]),
+                endDate: formatDateForApi(currentDateRange.value[1]),
+            };
+        }
+        const res = await advGetStatOverviewApi(params);
         stats.value = res.data;
     } catch (error) {
         ElMessage.error(`获取统计数据失败：${(error as Error).message}`);
     }
+};
+
+const handleDateChange = (range: [Date, Date]) => {
+    currentDateRange.value = range;
+    fetchStats();
 };
 
 const fetchProfile = async () => {
@@ -51,7 +66,7 @@ const handleEditCompanyName = async () => {
 
 onMounted(() => {
     loading.value = true;
-    Promise.all([fetchStats(), fetchProfile()]).finally(() => {
+    fetchProfile().finally(() => {
         loading.value = false;
     });
 });
@@ -62,32 +77,12 @@ onMounted(() => {
         <div class="header-section">
             <h1 class="company-title">{{ companyName || '未命名企业' }}</h1>
             <ElButton v-if="!companyName" type="primary" link @click="handleEditCompanyName">
-                <ElIcon class="mr-1"><Edit /></ElIcon>设置
+                <ElIcon class="mr-1"><Edit /></ElIcon>
+                <span>设置</span>
             </ElButton>
         </div>
 
-        <div class="stats-section" v-if="stats">
-            <div class="section-title">数据概览</div>
-            <div class="stats-summary">
-                <ElCard shadow="hover" class="stat-item">
-                    <template #header>总展示量</template>
-                    <div class="stat-value">{{ stats.totalImpressions }}</div>
-                </ElCard>
-                <ElCard shadow="hover" class="stat-item">
-                    <template #header>总点击量</template>
-                    <div class="stat-value">{{ stats.totalClicks }}</div>
-                </ElCard>
-                <ElCard shadow="hover" class="stat-item">
-                    <template #header>点击率 (CTR)</template>
-                    <div class="stat-value">{{ (stats.ctr * 100).toFixed(2) }}%</div>
-                </ElCard>
-                <ElCard shadow="hover" class="stat-item">
-                    <template #header>总花费</template>
-                    <div class="stat-value">￥{{ stats.totalSpend.toFixed(2) }}</div>
-                </ElCard>
-            </div>
-        </div>
-        <div v-else-if="!loading" class="empty-placeholder">暂无数据</div>
+        <AdDataChart :loading="loading" :stats="stats" @dateChange="handleDateChange" />
     </div>
 </template>
 
@@ -112,37 +107,16 @@ onMounted(() => {
         }
     }
 
-    .stats-section {
-        .section-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: var(--el-text-color-regular);
-        }
-
-        .stats-summary {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-
-            .stat-item {
-                flex: 1;
-                min-width: 200px;
-                text-align: center;
-
-                .stat-value {
-                    font-size: 24px;
-                    font-weight: bold;
-                    color: var(--el-color-primary);
-                }
-            }
-        }
-    }
-
-    .empty-placeholder {
+    :deep(.stat-item) {
+        flex: 1;
+        min-width: 200px;
         text-align: center;
-        color: var(--el-text-color-secondary);
-        margin-top: 50px;
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--el-color-primary);
+        }
     }
 }
 

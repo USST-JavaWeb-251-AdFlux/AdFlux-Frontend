@@ -1,19 +1,9 @@
 <script setup lang="ts">
-import { LineChart, type LineSeriesOption } from 'echarts/charts';
-import {
-    GridComponent,
-    type GridComponentOption,
-    LegendComponent,
-    type LegendComponentOption,
-    TooltipComponent,
-    type TooltipComponentOption,
-} from 'echarts/components';
-import * as echarts from 'echarts/core';
-import { CanvasRenderer } from 'echarts/renderers';
 import {
     AdActive,
     type AdDetails,
     AdLayout,
+    type AdStats,
     AdType,
     ReviewStatus,
     advDeleteAdApi,
@@ -23,14 +13,9 @@ import {
 } from '@/apis/advApis';
 import { type AdCategory, listCategoriesApi } from '@/apis/commonApis';
 import { getBackendFullPath } from '@/apis/request';
+import AdDataChart from '@/components/AdDataChart.vue';
 import { useSubTitle } from '@/composables/useSubTitle';
-import { formatDateTime } from '@/utils/tools';
-
-echarts.use([LineChart, TooltipComponent, GridComponent, LegendComponent, CanvasRenderer]);
-
-type ECOption = echarts.ComposeOption<
-    LineSeriesOption | TooltipComponentOption | GridComponentOption | LegendComponentOption
->;
+import { formatDateForApi, formatDateTime } from '@/utils/tools';
 
 const { adId } = defineProps<{ adId: string }>();
 const router = useRouter();
@@ -41,51 +26,9 @@ const ad = ref<AdDetails>();
 const categories = ref<AdCategory[]>([]);
 useSubTitle(() => ad.value?.title);
 
-const stats = ref<{
-    ctr: number;
-    totalClicks: number;
-    totalImpressions: number;
-    daily: { clicks: number; date: string; impressions: number }[];
-}>();
-const chartRef = useTemplateRef('chartRef');
-let chartInstance: echarts.ECharts | null = null;
+const stats = ref<AdStats>();
 
-useResizeObserver(chartRef, () => {
-    chartInstance?.resize();
-});
-
-const dateRange = ref<[Date, Date]>();
-
-const shortcuts: { text: string; value: () => [Date, Date] }[] = [
-    {
-        text: '本自然周',
-        value: () => {
-            const end = new Date();
-            const start = new Date();
-            const day = start.getDay() || 7;
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * (day - 1));
-            return [start, end];
-        },
-    },
-    {
-        text: '最近 7 天',
-        value: () => {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 6);
-            return [start, end];
-        },
-    },
-    {
-        text: '最近 30 天',
-        value: () => {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 29);
-            return [start, end];
-        },
-    },
-];
+const currentDateRange = ref<[Date, Date]>();
 
 const fetchCategories = async () => {
     try {
@@ -113,27 +56,19 @@ const fetchAdDetails = async () => {
     }
 };
 
-const formatDateForApi = (d: Date) => {
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-};
-
 const fetchStats = async () => {
     statLoading.value = true;
     try {
         let params = {};
-        if (dateRange.value && dateRange.value.length === 2) {
+        if (currentDateRange.value && currentDateRange.value.length === 2) {
             params = {
-                startDate: formatDateForApi(dateRange.value[0]),
-                endDate: formatDateForApi(dateRange.value[1]),
+                startDate: formatDateForApi(currentDateRange.value[0]),
+                endDate: formatDateForApi(currentDateRange.value[1]),
             };
         }
 
         const res = await advGetAdStatsApi(adId, params);
         stats.value = res.data;
-        nextTick(initChart);
     } catch (error) {
         ElMessage.error(`获取统计数据失败：${(error as Error).message}`);
     } finally {
@@ -141,102 +76,9 @@ const fetchStats = async () => {
     }
 };
 
-const initChart = () => {
-    if (!chartRef.value || !stats.value) return;
-
-    if (chartInstance) {
-        chartInstance.dispose();
-    }
-
-    chartInstance = echarts.init(chartRef.value);
-
-    const dates = stats.value.daily.map((d) => d.date);
-    const clicks = stats.value.daily.map((d) => d.clicks);
-    const impressions = stats.value.daily.map((d) => d.impressions);
-    const ctrs = stats.value.daily.map((d) =>
-        d.impressions > 0 ? Number(((d.clicks / d.impressions) * 100).toFixed(2)) : 0,
-    );
-
-    const option: ECOption = {
-        tooltip: {
-            trigger: 'axis',
-        },
-        legend: {
-            data: ['展示量', '点击量', '点击率'],
-        },
-        grid: {
-            left: '4%',
-            right: '4%',
-            bottom: '12%',
-            containLabel: true,
-        },
-        xAxis: {
-            type: 'category',
-            data: dates,
-            axisLabel: {
-                rotate: 0,
-                interval: 'auto',
-                hideOverlap: true,
-            },
-        },
-        yAxis: [
-            {
-                type: 'value',
-                name: '展示量 / 点击量',
-                position: 'left',
-                minInterval: 1,
-            },
-            {
-                type: 'value',
-                name: '点击率 (CTR)',
-                position: 'right',
-                min: 0,
-                max: 100,
-                axisLabel: {
-                    formatter: '{value}%',
-                },
-            },
-        ],
-        series: [
-            {
-                name: '点击率',
-                type: 'line',
-                data: ctrs,
-                yAxisIndex: 1,
-                smooth: true,
-                showSymbol: false,
-                areaStyle: {
-                    color: '#FDD835',
-                    opacity: 0.2,
-                },
-                itemStyle: { color: '#FDD835' },
-                tooltip: {
-                    valueFormatter: (value) => value + '%',
-                },
-                z: 1,
-            },
-            {
-                name: '展示量',
-                type: 'line',
-                data: impressions,
-                yAxisIndex: 0,
-                smooth: false,
-                itemStyle: { color: '#F44336' },
-                z: 2,
-            },
-            {
-                name: '点击量',
-                type: 'line',
-                data: clicks,
-                yAxisIndex: 0,
-                smooth: false,
-                itemStyle: { color: '#2196F3' },
-                z: 3,
-            },
-        ],
-    };
-
-    chartInstance.setOption(option);
+const handleDateChange = (range: [Date, Date]) => {
+    currentDateRange.value = range;
+    fetchStats();
 };
 
 const handleBack = () => {
@@ -285,27 +127,16 @@ const handleDelete = async () => {
 };
 
 onMounted(() => {
-    const shortcut = shortcuts?.[0];
-    if (shortcut && typeof shortcut.value === 'function') {
-        dateRange.value = shortcut.value();
-    }
-
     fetchCategories();
 
     watch(
         () => adId,
         () => {
-            chartInstance?.dispose();
-            chartInstance = null;
             fetchAdDetails();
             fetchStats();
         },
         { immediate: true },
     );
-});
-
-onUnmounted(() => {
-    chartInstance?.dispose();
 });
 </script>
 
@@ -409,37 +240,11 @@ onUnmounted(() => {
                 </div>
             </div>
 
-            <div class="stats-section" v-loading="!loading && statLoading">
-                <div class="section-title">数据统计</div>
-                <div class="filter-container">
-                    <span class="label">展示周期：</span>
-                    <ElDatePicker
-                        v-model="dateRange"
-                        type="daterange"
-                        unlink-panels
-                        range-separator="至"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期"
-                        :shortcuts="shortcuts"
-                        @change="fetchStats"
-                    />
-                </div>
-                <div class="stats-summary" v-if="stats">
-                    <ElCard shadow="hover" class="stat-item">
-                        <template #header>总展示量</template>
-                        <div class="stat-value">{{ stats.totalImpressions }}</div>
-                    </ElCard>
-                    <ElCard shadow="hover" class="stat-item">
-                        <template #header>总点击量</template>
-                        <div class="stat-value">{{ stats.totalClicks }}</div>
-                    </ElCard>
-                    <ElCard shadow="hover" class="stat-item">
-                        <template #header>点击率 (CTR)</template>
-                        <div class="stat-value">{{ (stats.ctr * 100).toFixed(2) }}%</div>
-                    </ElCard>
-                </div>
-                <div class="chart-container" ref="chartRef"></div>
-            </div>
+            <AdDataChart
+                :loading="!loading && statLoading"
+                :stats="stats"
+                @dateChange="handleDateChange"
+            />
         </ElCard>
     </div>
 </template>

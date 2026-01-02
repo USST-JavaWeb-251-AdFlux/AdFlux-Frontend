@@ -73,34 +73,28 @@ export const advDeleteAdApi = (adId: string) => {
     return request<ApiResponse<boolean>>(`/advertisers/ads/${adId}`, { method: 'DELETE' });
 };
 
+export type AdStats = {
+    ctr: number;
+    totalClicks: number;
+    totalImpressions: number;
+    daily: { clicks: number; date: string; impressions: number }[];
+};
+
 export const advGetAdStatsApi = (
     adId: string,
     params?: { startDate?: string; endDate?: string },
 ) => {
-    return request<
-        ApiResponse<{
-            adId: string;
-            ctr: number;
-            daily: {
-                clicks: number;
-                date: string;
-                impressions: number;
-            }[];
-            totalClicks: number;
-            totalImpressions: number;
-        }>
-    >(`/advertisers/ads/${adId}/statistics`, { method: 'GET', params });
+    return request<ApiResponse<{ adId: string } & AdStats>>(`/advertisers/ads/${adId}/statistics`, {
+        method: 'GET',
+        params,
+    });
 };
 
-export const advGetStatOverviewApi = () => {
-    return request<
-        ApiResponse<{
-            ctr: number;
-            totalClicks: number;
-            totalImpressions: number;
-            totalSpend: number;
-        }>
-    >('/advertisers/statistics/summary', { method: 'GET' });
+export const advGetStatOverviewApi = (params?: { startDate?: string; endDate?: string }) => {
+    return request<ApiResponse<AdStats>>('/advertisers/statistics/summary', {
+        method: 'GET',
+        params,
+    });
 };
 
 export const advToggleAdStatusApi = (

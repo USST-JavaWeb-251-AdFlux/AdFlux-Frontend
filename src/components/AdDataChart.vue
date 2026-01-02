@@ -74,10 +74,11 @@ const initChart = () => {
 
     chartInstance = echarts.init(chartRef.value);
 
-    const dates = stats.daily.map((d) => d.date);
-    const clicks = stats.daily.map((d) => d.clicks);
-    const impressions = stats.daily.map((d) => d.impressions);
-    const ctrs = stats.daily.map((d) =>
+    const daily = stats.daily ?? [];
+    const dates = daily.map((d) => d.date);
+    const clicks = daily.map((d) => d.clicks);
+    const impressions = daily.map((d) => d.impressions);
+    const ctrs = daily.map((d) =>
         d.impressions > 0 ? Number(((d.clicks / d.impressions) * 100).toFixed(2)) : 0,
     );
 

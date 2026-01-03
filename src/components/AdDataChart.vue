@@ -120,6 +120,7 @@ const initChart = () => {
                 axisLabel: {
                     formatter: '{value}%',
                 },
+                splitLine: { show: false },
             },
         ],
         series: [
@@ -136,7 +137,7 @@ const initChart = () => {
                 },
                 itemStyle: { color: '#FDD835' },
                 tooltip: {
-                    valueFormatter: (value) => value + '%',
+                    valueFormatter: (value) => `${value}%`,
                 },
                 z: 1,
             },

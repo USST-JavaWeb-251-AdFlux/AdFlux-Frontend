@@ -14,6 +14,7 @@ const router = useRouter();
 const { websiteId } = defineProps<{ websiteId: string }>();
 
 const loading = ref(true);
+const verifying = ref(false);
 const website = ref<WebsiteDetails | null>(null);
 useSubTitle(() => website.value?.websiteName);
 const categories = ref<string[]>([]);
@@ -35,12 +36,18 @@ const fetchWebsite = async () => {
 
 const handleVerify = async () => {
     if (!website.value) return;
+
+    verifying.value = true;
+    const verifyMsg = ElMessage.primary({ message: '正在验证中，请稍候…', duration: 0 });
     try {
         await pubVerifySiteApi(website.value.websiteId);
-        ElMessage.success('验证请求已发送，请刷新查看状态');
+        ElMessage.success('验证成功');
         fetchWebsite();
     } catch (error) {
         ElMessage.error(`验证失败：${(error as Error).message}`);
+    } finally {
+        verifying.value = false;
+        verifyMsg.close();
     }
 };
 
@@ -83,7 +90,10 @@ onMounted(async () => {
                 <template #header>
                     <div class="card-header">
                         <span class="title">基本信息</span>
-                        <ElTag :type="WebsiteVerification(website.isVerified).type">
+                        <ElTag
+                            :type="WebsiteVerification(website.isVerified).type"
+                            disable-transitions
+                        >
                             {{ WebsiteVerification(website.isVerified).label }}
                         </ElTag>
                     </div>
@@ -142,6 +152,7 @@ onMounted(async () => {
                                     type="primary"
                                     size="small"
                                     @click="handleVerify"
+                                    :disabled="verifying"
                                     class="verify-btn"
                                     >立即验证</ElButton
                                 >

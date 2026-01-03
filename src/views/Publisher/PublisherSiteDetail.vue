@@ -17,12 +17,15 @@ const loading = ref(true);
 const website = ref<WebsiteDetails | null>(null);
 useSubTitle(() => website.value?.websiteName);
 const categories = ref<string[]>([]);
+const isVerificationExpanded = ref(true);
 
 const fetchWebsite = async () => {
     loading.value = true;
     try {
         const res = await getSiteDetailsApi(websiteId);
         website.value = res.data;
+        isVerificationExpanded.value =
+            website.value.isVerified !== WebsiteVerification.verified.value;
     } catch (error) {
         ElMessage.error(`获取网站信息失败：${(error as Error).message}`);
     } finally {
@@ -104,32 +107,46 @@ onMounted(async () => {
 
             <ElCard
                 class="detail-card"
-                v-if="website.isVerified === WebsiteVerification.unverified.value"
+                :class="{ 'is-collapsed': !isVerificationExpanded }"
                 shadow="never"
+                :body-style="{ padding: 0 }"
             >
                 <template #header>
                     <div class="card-header">
                         <span class="title">网站验证</span>
+                        <ElButton
+                            link
+                            type="primary"
+                            v-if="website.isVerified === WebsiteVerification.verified.value"
+                            @click="isVerificationExpanded = !isVerificationExpanded"
+                        >
+                            {{ isVerificationExpanded ? '收起' : '展开' }}
+                        </ElButton>
                     </div>
                 </template>
-                <div class="verification-steps">
-                    <div class="step">
-                        <h4>第一步：添加 Meta 标签</h4>
-                        <p>
-                            请将以下 Meta 标签添加到您网站首页的 <code>&lt;head&gt;</code> 标签中：
-                        </p>
-                        <CodeBlock :code="metaTag" lang="html" />
-                    </div>
-                    <div class="step">
-                        <h4>第二步：点击验证</h4>
-                        <p>完成上述步骤后，点击下方按钮进行验证。</p>
-                        <ElButton
-                            type="primary"
-                            size="small"
-                            @click="handleVerify"
-                            class="verify-btn"
-                            >立即验证</ElButton
-                        >
+                <div class="collapse-wrapper" :class="{ 'is-expanded': isVerificationExpanded }">
+                    <div class="collapse-content">
+                        <div class="verification-steps">
+                            <div class="step">
+                                <h4>第一步：添加 Meta 标签</h4>
+                                <p>
+                                    请将以下 Meta 标签添加到您网站首页的
+                                    <code>&lt;head&gt;</code> 标签中：
+                                </p>
+                                <CodeBlock :code="metaTag" lang="html" />
+                            </div>
+                            <div class="step">
+                                <h4>第二步：点击验证</h4>
+                                <p>完成上述步骤后，点击下方按钮进行验证。</p>
+                                <ElButton
+                                    type="primary"
+                                    size="small"
+                                    @click="handleVerify"
+                                    class="verify-btn"
+                                    >立即验证</ElButton
+                                >
+                            </div>
+                        </div>
                     </div>
                 </div>
             </ElCard>
@@ -199,33 +216,63 @@ onMounted(async () => {
         display: flex;
         flex-direction: column;
         gap: 20px;
-    }
+        padding-bottom: 20px;
 
-    .detail-card {
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .detail-card {
+            .card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
 
-            .title {
-                font-size: 18px;
-                font-weight: bold;
+                .title {
+                    font-size: 18px;
+                    font-weight: bold;
+                }
             }
-        }
-    }
 
-    .step {
-        h4 {
-            margin: 0 0 12px;
-            font-weight: 600;
-        }
+            :deep(.el-card__header) {
+                transition: border-bottom-color 0.3s;
+            }
 
-        .verify-btn {
-            margin-top: 8px;
-        }
+            &.is-collapsed {
+                :deep(.el-card__header) {
+                    border-bottom-color: transparent;
+                }
+            }
 
-        + .step {
-            margin-top: 24px;
+            .collapse-wrapper {
+                display: grid;
+                grid-template-rows: 0fr;
+                transition: grid-template-rows 0.3s ease;
+                overflow: hidden;
+
+                &.is-expanded {
+                    grid-template-rows: 1fr;
+                }
+
+                .collapse-content {
+                    min-height: 0;
+
+                    .verification-steps {
+                        padding: var(--el-card-padding);
+                    }
+                }
+            }
+
+            .step {
+                h4 {
+                    margin: 0 0 12px;
+                    font-weight: 600;
+                }
+
+                .verify-btn {
+                    margin-top: 8px;
+                }
+
+                + .step {
+                    margin-top: 24px;
+                }
+            }
         }
     }
 }

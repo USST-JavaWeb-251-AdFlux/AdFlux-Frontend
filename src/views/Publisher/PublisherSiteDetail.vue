@@ -183,7 +183,12 @@ onMounted(async () => {
                         <CodeBlock :code="slotImgScript" lang="html" />
                         <p>
                             提示：您可以使用 <code>style</code> 或
-                            <code>class</code> 属性来设置广告的尺寸。
+                            <code>class</code>
+                            属性来设置广告的尺寸，广告会自动根据尺寸选择横幅或侧栏类广告。
+                        </p>
+                        <p>
+                            如果需要手动指定广告类型，可以添加 <code>layout="banner"</code> 或
+                            <code>layout="sidebar"</code> 属性。
                         </p>
                         <br />
                         <p>对于视频广告，需要使用下面的广告组件代码：</p>

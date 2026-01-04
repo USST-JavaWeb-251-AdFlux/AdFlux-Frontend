@@ -59,7 +59,8 @@ const metaTag = computed(() => {
 const adsHost = import.meta.env.VITE_ADS_HOST;
 const adScript = `<script type="module" src="${import.meta.resolve(`${adsHost}/main.js`)}"><\/script>`;
 
-const slotScript = `<adflux-slot></adflux-slot>`;
+const slotImgScript = `<adflux-slot></adflux-slot>`;
+const slotVideoScript = `<adflux-video></adflux-video>`;
 
 const categoryScript = `<meta name="adflux-page-category" content="(分类名)" />`;
 
@@ -178,20 +179,33 @@ onMounted(async () => {
                     </div>
                     <div class="step">
                         <h4>第二步：添加广告栏位</h4>
-                        <p>在每个广告展示的位置添加相应的广告栏位代码：</p>
-                        <CodeBlock :code="slotScript" lang="html" />
+                        <p>对于图片广告，在每个广告展示的位置添加相应的广告栏位代码：</p>
+                        <CodeBlock :code="slotImgScript" lang="html" />
+                        <p>
+                            提示：您可以使用 <code>style</code> 或
+                            <code>class</code> 属性来设置广告的尺寸。
+                        </p>
+                        <br />
+                        <p>对于视频广告，需要使用下面的广告组件代码：</p>
+                        <CodeBlock :code="slotVideoScript" lang="html" />
+                        <p>
+                            您可以将广告组件设置为隐藏，在需要的时候显示，并调用
+                            <code>adFluxVideo.play()</code> 开始播放广告。
+                        </p>
+                        <p>
+                            之后，可以使用 <code>addEventListener</code> 监听
+                            <code>ad-finished</code> 和
+                            <code>ad-error</code> 事件，分别代表广告播放完成和播放出错。
+                        </p>
+                        <br />
                         <p>
                             提示：如果您使用 Vue，请在
                             <code>compilerOptions</code> 中注册广告栏位组件：
                         </p>
                         <CodeBlock
-                            code="compilerOptions: { isCustomElement: (tag) => (tag === 'adflux-slot') }"
+                            code="compilerOptions: { isCustomElement: (tag) => (tag.startsWith('adflux-')) }"
                             lang="javascript"
                         />
-                        <p>
-                            提示：您可以使用 <code>style</code> 或
-                            <code>class</code> 属性来设置广告的尺寸。
-                        </p>
                     </div>
                     <div class="step">
                         <h4>第三步：添加分类标识（可选）</h4>

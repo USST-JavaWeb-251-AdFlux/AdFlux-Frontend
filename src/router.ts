@@ -75,6 +75,12 @@ const routes: RouteRecordRaw[] = [
                         meta: { title: '分类管理' },
                         component: () => import('@/views/Admin/AdminCategory.vue'),
                     },
+                    {
+                        path: 'debug',
+                        name: 'AdminDebug',
+                        meta: { title: '调试面板' },
+                        component: () => import('@/views/Admin/AdminDebug.vue'),
+                    },
                 ],
             },
             {

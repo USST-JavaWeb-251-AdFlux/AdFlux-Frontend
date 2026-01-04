@@ -1,7 +1,7 @@
 import { type ValueOf } from '@/utils/enum';
 import type { AdDetails, ReviewStatus } from './advApis';
 import type { UserRole } from './authApis';
-import { request } from './request';
+import { getBackendFullPath, request } from './request';
 import type { ApiResponse, Pagination, PaginationParams } from './types';
 
 export const listAllAdsApi = (
@@ -45,3 +45,6 @@ export const createAdminApi = (body: {
 }) => {
     return request<ApiResponse<UserDetails>>('/admin/users', { method: 'POST', body });
 };
+
+export const getDebugWebSocket = () =>
+    new WebSocket(import.meta.resolve(getBackendFullPath('/ws/ad-debug')));

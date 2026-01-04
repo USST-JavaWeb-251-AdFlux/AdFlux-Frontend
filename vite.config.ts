@@ -75,6 +75,7 @@ export default defineConfig(({ mode }) => {
             config.server.proxy[apiHost.pathname] = {
                 target: apiHost.origin,
                 changeOrigin: true,
+                ws: true,
             };
         }
     } catch {}

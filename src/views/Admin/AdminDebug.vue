@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getDebugWebSocket } from '@/apis/adminApis';
+import CodeBlock from '@/components/CodeBlock.vue';
 import { formatDateTime } from '@/utils/tools';
 
 interface AdDebugLog {

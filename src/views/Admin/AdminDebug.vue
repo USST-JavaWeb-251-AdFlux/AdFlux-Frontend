@@ -44,6 +44,7 @@ interface AdDebugLog {
 }
 
 const logs = reactive<AdDebugLog[]>([]);
+let logId = 0;
 const selectedLog = ref<AdDebugLog | null>(null);
 const isConnected = ref(false);
 let ws: WebSocket | null = null;
@@ -79,7 +80,7 @@ const connect = () => {
         try {
             const data = JSON.parse(event.data);
             const log: AdDebugLog = {
-                id: Date.now(),
+                id: logId++,
                 time: formatDateTime(new Date()),
                 ...data,
             };

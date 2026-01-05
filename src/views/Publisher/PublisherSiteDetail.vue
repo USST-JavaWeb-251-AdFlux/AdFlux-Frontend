@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { listCategoriesApi } from '@/apis/commonApis';
 import {
+    type PubStats,
     type WebsiteDetails,
     WebsiteVerification,
     getSiteDetailsApi,
+    pubGetSiteStatsApi,
     pubVerifySiteApi,
 } from '@/apis/publisherApis';
 import CodeBlock from '@/components/CodeBlock.vue';
+import PubDataChart from '@/components/PubDataChart.vue';
 import { useSubTitle } from '@/composables/useSubTitle';
-import { formatDateTime } from '@/utils/tools';
+import { formatDateForApi, formatDateTime } from '@/utils/tools';
 
 const router = useRouter();
 const { websiteId } = defineProps<{ websiteId: string }>();
@@ -19,6 +22,34 @@ const website = ref<WebsiteDetails | null>(null);
 useSubTitle(() => website.value?.websiteName);
 const categories = ref<string[]>([]);
 const isVerificationExpanded = ref(true);
+
+const stats = ref<PubStats>();
+const statsLoading = ref(false);
+const currentDateRange = ref<[Date, Date]>();
+
+const fetchStats = async () => {
+    statsLoading.value = true;
+    try {
+        let params = {};
+        if (currentDateRange.value && currentDateRange.value.length === 2) {
+            params = {
+                startDate: formatDateForApi(currentDateRange.value[0]),
+                endDate: formatDateForApi(currentDateRange.value[1]),
+            };
+        }
+        const res = await pubGetSiteStatsApi(websiteId, params);
+        stats.value = res.data;
+    } catch (error) {
+        ElMessage.error(`获取统计数据失败：${(error as Error).message}`);
+    } finally {
+        statsLoading.value = false;
+    }
+};
+
+const handleDateChange = (range: [Date, Date]) => {
+    currentDateRange.value = range;
+    fetchStats();
+};
 
 const fetchWebsite = async () => {
     loading.value = true;
@@ -114,6 +145,12 @@ onMounted(async () => {
                         {{ formatDateTime(website.verifyTime) }}
                     </ElDescriptionsItem>
                 </ElDescriptions>
+
+                <PubDataChart
+                    :loading="statsLoading"
+                    :stats="stats"
+                    @dateChange="handleDateChange"
+                />
             </ElCard>
 
             <ElCard

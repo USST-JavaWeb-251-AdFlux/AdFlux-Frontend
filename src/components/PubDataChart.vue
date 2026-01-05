@@ -10,7 +10,7 @@ import {
 } from 'echarts/components';
 import * as echarts from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
-import type { AdStats } from '@/apis/advApis';
+import type { PubStats } from '@/apis/publisherApis';
 
 echarts.use([LineChart, TooltipComponent, GridComponent, LegendComponent, CanvasRenderer]);
 
@@ -20,7 +20,7 @@ type ECOption = echarts.ComposeOption<
 
 const { loading, stats } = defineProps<{
     loading: boolean;
-    stats?: AdStats;
+    stats?: PubStats;
 }>();
 
 const emit = defineEmits<{ dateChange: [[Date, Date]] }>();
@@ -78,7 +78,7 @@ const initChart = () => {
     const dates = daily.map((d) => d.date);
     const clicks = daily.map((d) => d.clicks);
     const impressions = daily.map((d) => d.impressions);
-    const spends = daily.map((d) => d.spend);
+    const revenues = daily.map((d) => d.revenue);
     const ctrs = daily.map((d) =>
         d.impressions > 0 ? Number(((d.clicks / d.impressions) * 100).toFixed(2)) : 0,
     );
@@ -88,7 +88,7 @@ const initChart = () => {
             trigger: 'axis',
         },
         legend: {
-            data: ['展示量', '点击量', '点击率', '支出'],
+            data: ['展示量', '点击量', '点击率', '收入'],
         },
         grid: {
             left: '4%',
@@ -114,7 +114,7 @@ const initChart = () => {
             },
             {
                 type: 'value',
-                name: '支出',
+                name: '收入',
                 position: 'right',
                 splitLine: { show: false },
                 axisTick: { show: false },
@@ -152,14 +152,14 @@ const initChart = () => {
                 z: 1,
             },
             {
-                name: '支出',
+                name: '收入',
                 type: 'line',
-                data: spends,
-                yAxisIndex: 1,
                 lineStyle: {
                     type: 'dotted',
                 },
                 showSymbol: false,
+                data: revenues,
+                yAxisIndex: 1,
                 itemStyle: { color: '#4CAF50' },
                 tooltip: {
                     valueFormatter: (value) => `￥${value}`,
@@ -242,11 +242,17 @@ onUnmounted(() => {
             </ElCard>
             <ElCard shadow="hover" class="stat-item">
                 <template #header>点击率 (CTR)</template>
-                <div class="stat-value">{{ (stats.ctr * 100).toFixed(2) }}%</div>
+                <div class="stat-value">
+                    {{
+                        stats.totalImpressions > 0
+                            ? ((stats.totalClicks / stats.totalImpressions) * 100).toFixed(2)
+                            : '0.00'
+                    }}%
+                </div>
             </ElCard>
             <ElCard shadow="hover" class="stat-item">
-                <template #header>总支出</template>
-                <div class="stat-value">￥{{ stats.totalSpend.toFixed(2) }}</div>
+                <template #header>总收入</template>
+                <div class="stat-value">￥{{ stats.totalRevenue.toFixed(2) }}</div>
             </ElCard>
         </div>
         <div class="chart-container" v-show="stats?.daily" ref="chartRef"></div>

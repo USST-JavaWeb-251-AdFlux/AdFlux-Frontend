@@ -139,7 +139,7 @@ onUnmounted(disconnect);
                     {{ isConnected ? '断开连接' : '连接调试' }}
                 </ElButton>
                 <ElButton @click="clearLogs">清空日志</ElButton>
-                <ElTag :type="isConnected ? 'success' : 'info'">
+                <ElTag disable-transitions :type="isConnected ? 'success' : 'info'">
                     {{ isConnected ? '已连接' : '未连接' }}
                 </ElTag>
             </ElSpace>
@@ -147,20 +147,22 @@ onUnmounted(disconnect);
 
         <div class="content">
             <div class="log-list">
-                <div
-                    v-for="log in logs"
-                    :key="log.id"
-                    class="log-item"
-                    :class="{ active: selectedLog?.id === log.id }"
-                    @click="selectedLog = log"
-                >
-                    <div class="log-time">{{ log.time }}</div>
-                    <div class="log-title">{{ log.finalSelect.adTitle }}</div>
-                    <div class="log-meta">
-                        RT: {{ log.costTime }}ms | Cat: {{ log.finalSelect.categoryId }}
+                <ElScrollbar>
+                    <div
+                        v-for="log in logs"
+                        :key="log.id"
+                        class="log-item"
+                        :class="{ active: selectedLog?.id === log.id }"
+                        @click="selectedLog = log"
+                    >
+                        <div class="log-time">{{ log.time }}</div>
+                        <div class="log-title">{{ log.finalSelect.adTitle }}</div>
+                        <div class="log-meta">
+                            RT: {{ log.costTime }}ms | Cat: {{ log.finalSelect.categoryId }}
+                        </div>
                     </div>
-                </div>
-                <ElEmpty v-if="logs.length === 0" description="暂无调试日志" />
+                    <ElEmpty v-if="logs.length === 0" description="暂无调试日志" />
+                </ElScrollbar>
             </div>
 
             <div class="log-detail" v-if="selectedLog">
@@ -178,7 +180,9 @@ onUnmounted(disconnect);
                                     {{ selectedLog.finalSelect.categoryId }}
                                 </ElDescriptionsItem>
                                 <ElDescriptionsItem label="响应耗时">
-                                    <ElTag type="warning">{{ selectedLog.costTime }} ms</ElTag>
+                                    <ElTag disable-transitions type="warning"
+                                        >{{ selectedLog.costTime }} ms</ElTag
+                                    >
                                 </ElDescriptionsItem>
                             </ElDescriptions>
                         </ElCard>
@@ -240,7 +244,10 @@ onUnmounted(disconnect);
                                 <ElTableColumn prop="range" label="范围" />
                                 <ElTableColumn label="是否命中">
                                     <template #default="{ row }">
-                                        <ElTag :type="row.isHit ? 'success' : 'info'">
+                                        <ElTag
+                                            disable-transitions
+                                            :type="row.isHit ? 'success' : 'info'"
+                                        >
                                             {{ row.isHit ? '命中' : '未命中' }}
                                         </ElTag>
                                     </template>
@@ -259,7 +266,10 @@ onUnmounted(disconnect);
                                 <ElTableColumn prop="currentSpent" label="当前消耗" />
                                 <ElTableColumn label="状态">
                                     <template #default="{ row }">
-                                        <ElTag :type="row.isPassed ? 'success' : 'danger'">
+                                        <ElTag
+                                            disable-transitions
+                                            :type="row.isPassed ? 'success' : 'danger'"
+                                        >
                                             {{ row.isPassed ? '通过' : '预算不足' }}
                                         </ElTag>
                                     </template>
@@ -282,16 +292,14 @@ onUnmounted(disconnect);
 
 <style scoped lang="scss">
 .admin-debug {
-    height: calc(100vh - 160px);
+    height: 100%;
     display: flex;
     flex-direction: column;
     gap: 16px;
 
     .toolbar {
-        padding: 12px;
         background: #fff;
         border-radius: 8px;
-        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
     }
 
     .content {

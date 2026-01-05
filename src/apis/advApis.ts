@@ -74,10 +74,16 @@ export const advDeleteAdApi = (adId: string) => {
 };
 
 export type AdStats = {
+    daily?: {
+        clicks: number;
+        date: string;
+        impressions: number;
+        spend: number;
+    }[];
     ctr: number;
     totalClicks: number;
     totalImpressions: number;
-    daily?: { clicks: number; date: string; impressions: number }[];
+    totalSpend: number;
 };
 
 export const advGetAdStatsApi = (

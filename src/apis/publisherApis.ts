@@ -44,14 +44,30 @@ export const pubVerifySiteApi = (websiteId: string) => {
     });
 };
 
-export const pubGetStatisticsApi = (params?: { startDate?: string; endDate?: string }) => {
-    return request<
-        ApiResponse<{
-            estimatedRevenue: number;
-            totalClicks: number;
-            totalImpressions: number;
-        }>
-    >(`/publishers/statistics`, {
+export type PubStats = {
+    daily: {
+        clicks: number;
+        date: string;
+        impressions: number;
+        revenue: number;
+    }[];
+    totalClicks: number;
+    totalImpressions: number;
+    totalRevenue: number;
+};
+
+export const pubGetSiteStatsApi = (
+    websiteId: string,
+    params?: { startDate?: string; endDate?: string },
+) => {
+    return request<ApiResponse<PubStats>>(`/publishers/sites/${websiteId}/statistics`, {
+        method: 'GET',
+        params,
+    });
+};
+
+export const pubGetSummaryStatsApi = (params?: { startDate?: string; endDate?: string }) => {
+    return request<ApiResponse<PubStats>>(`/publishers/statistics/summary`, {
         method: 'GET',
         params,
     });

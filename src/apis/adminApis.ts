@@ -46,5 +46,17 @@ export const createAdminApi = (body: {
     return request<ApiResponse<UserDetails>>('/admin/users', { method: 'POST', body });
 };
 
+export const getAdminDashboardApi = () => {
+    return request<
+        ApiResponse<{
+            activeReviewedAds: number;
+            pendingAds: number;
+            totalAds: number;
+            totalUsers: number;
+            totalWebsites: number;
+        }>
+    >('/admin/dashboard', { method: 'GET' });
+};
+
 export const getDebugWebSocket = () =>
     new WebSocket(import.meta.resolve(getBackendFullPath('/ws/ad-debug')));

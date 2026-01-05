@@ -1,3 +1,3 @@
 <template>
-    <div>欢迎，发布主！</div>
+    <div>欢迎，站长！</div>
 </template>

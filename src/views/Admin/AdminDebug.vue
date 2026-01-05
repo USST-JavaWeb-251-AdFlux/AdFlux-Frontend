@@ -312,7 +312,6 @@ onUnmounted(disconnect);
             width: 300px;
             background: #fff;
             border-radius: 8px;
-            overflow-y: auto;
             border: 1px solid #ebeef5;
 
             .log-item {

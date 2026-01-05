@@ -218,7 +218,18 @@ onMounted(() => {
                         <ElDescriptionsItem label="周预算">
                             ￥{{ ad.weeklyBudget.toFixed(2) }}
                         </ElDescriptionsItem>
-                        <ElDescriptionsItem label="落地页">
+                        <ElDescriptionsItem>
+                            <template #label>
+                                <div style="display: flex; align-items: center; gap: 4px">
+                                    落地页
+                                    <ElTooltip
+                                        content="访客点击广告时跳转的页面，会自动添加 utm_source 参数。"
+                                        placement="top"
+                                    >
+                                        <ElIcon><QuestionFilled /></ElIcon>
+                                    </ElTooltip>
+                                </div>
+                            </template>
                             <a
                                 :href="ad.landingPage"
                                 target="_blank"

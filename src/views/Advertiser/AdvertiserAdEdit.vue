@@ -248,7 +248,18 @@ onMounted(async () => {
                         </div>
                     </ElUpload>
                 </ElFormItem>
-                <ElFormItem label="落地页" prop="landingPage">
+                <ElFormItem prop="landingPage">
+                    <template #label>
+                        <div style="display: flex; align-items: center; gap: 4px">
+                            落地页
+                            <ElTooltip
+                                content="访客点击广告时跳转的页面，会自动添加 utm_source 参数。"
+                                placement="top"
+                            >
+                                <ElIcon><QuestionFilled /></ElIcon>
+                            </ElTooltip>
+                        </div>
+                    </template>
                     <ElInput v-model="formData.landingPage" placeholder="https://..." />
                 </ElFormItem>
                 <ElFormItem label="分类" prop="categoryId">
